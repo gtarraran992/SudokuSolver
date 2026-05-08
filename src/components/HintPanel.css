@@ -1,0 +1,33 @@
+.hint-panel { display: flex; flex-direction: column; gap: 12px; }
+
+.level-row { display: flex; gap: 8px; }
+
+.level-btn {
+  flex: 1; padding: 8px 4px; border-radius: 8px;
+  border: 1px solid #B4B2A9; background: #fff;
+  font-size: 12px; color: #5F5E5A; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.level-btn:hover { background: #f5f4f0; }
+
+.hint-box { border-radius: 10px; padding: 12px; }
+.hint-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.technique-name { font-size: 14px; font-weight: 600; }
+.level-badge { font-size: 11px; }
+.hint-text { font-size: 13px; color: #444441; line-height: 1.5; margin: 0; }
+
+.hint-empty {
+  padding: 16px; border-radius: 10px; background: #F1EFE8;
+  text-align: center; color: #888780; font-size: 13px;
+}
+.hint-empty p { margin: 0; }
+
+.hint-button {
+  background: #3C3489; color: #CECBF6;
+  border: none; border-radius: 10px;
+  padding: 13px; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s; width: 100%;
+}
+.hint-button:hover { opacity: 0.88; }
+
+.hint-count { text-align: center; font-size: 12px; color: #888780; margin: 0; }

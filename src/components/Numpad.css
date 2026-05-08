@@ -1,0 +1,17 @@
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.num-btn, .erase-btn {
+  height: 44px; border-radius: 8px;
+  border: 1px solid #B4B2A9; background: #fff;
+  font-size: 18px; font-weight: 500;
+  cursor: pointer; transition: background 0.1s;
+}
+
+.num-btn:hover, .erase-btn:hover { background: #f5f4f0; }
+
+.erase-btn { color: #5F5E5A; font-size: 16px; }
