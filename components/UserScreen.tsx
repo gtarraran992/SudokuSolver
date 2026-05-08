@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, ScrollView,
-  StyleSheet, Alert, SafeAreaView,
+  StyleSheet, Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import SudokuGrid from './SudokuGrid';
@@ -102,11 +103,6 @@ export default function UserScreen({ navigation, route }: Props) {
           </Text>
         </View>
 
-        {/* Pulsante errore fissi */}
-        <TouchableOpacity style={styles.errorBtn} onPress={() => navigation.goBack()}>
-          <Text style={styles.errorBtnText}>⚠️ C'è un errore nei numeri fissi</Text>
-        </TouchableOpacity>
-
         <View style={styles.gridWrapper}>
           <SudokuGrid
             board={board}
@@ -139,6 +135,13 @@ export default function UserScreen({ navigation, route }: Props) {
           <Text style={styles.calcBtnText}>Calcola soluzione →</Text>
         </TouchableOpacity>
 
+<TouchableOpacity 
+  style={[styles.errorBtn, { marginTop: 16 }]} 
+  onPress={() => navigation.goBack()}
+>
+  <Text style={styles.errorBtnText}>⚠️ C'è un errore nei numeri fissi</Text>
+</TouchableOpacity>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -158,11 +161,11 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 15, fontWeight: '600', color: '#0C447C', marginBottom: 4 },
   cardDesc: { fontSize: 13, color: '#1A5A96', lineHeight: 19 },
-  errorBtn: {
+errorBtn: {
     borderWidth: 0.5, borderColor: '#E8A317',
     backgroundColor: '#FAEEDA', borderRadius: 10,
     paddingVertical: 10, paddingHorizontal: 14,
-    alignItems: 'center', marginBottom: 14,
+    alignItems: 'center', marginBottom: 12, marginTop: 12,
   },
   errorBtnText: { fontSize: 13, color: '#633806', fontWeight: '500' },
   gridWrapper: { alignItems: 'center', marginBottom: 16 },
