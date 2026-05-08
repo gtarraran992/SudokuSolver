@@ -24,10 +24,10 @@ src/
 │   ├── SudokuGrid.tsx    # Griglia 9×9 interattiva
 │   ├── HintPanel.tsx     # Pannello livelli indizio
 │   └── Numpad.tsx        # Tastierino numerico
-└── screens/
-├── GivenScreen.tsx   # Passo 1: inserimento numeri fissi
-├── UserScreen.tsx    # Passo 2: numeri già risolti + calcolo
-└── HintScreen.tsx    # Passo 3: modalità indizi
+├── screens/
+│   ├── GivenScreen.tsx   # Passo 1: inserimento numeri fissi
+│   ├── UserScreen.tsx    # Passo 2: numeri già risolti + calcolo
+│   ├── HintScreen.tsx    # Passo 3: modalità indizi
 
 ## Flusso app
 1. **Passo 1** — inserimento numeri fissi (nero), conferma e blocco

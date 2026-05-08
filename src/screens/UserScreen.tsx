@@ -8,14 +8,15 @@ import './Screen.css';
 
 interface Props {
   givenBoard: BoardState;
+  initialBoard?: BoardState;
   onCalculate: (board: BoardState, solution: Grid) => void;
   onBack: () => void;
 }
 
-export default function UserScreen({ givenBoard, onCalculate, onBack }: Props) {
-  const [board, setBoard] = useState<BoardState>(
-    givenBoard.map(row => row.map(cell => ({ ...cell })))
-  );
+export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBack }: Props) {
+const [board, setBoard] = useState<BoardState>(
+  initialBoard ?? givenBoard.map(row => row.map(cell => ({ ...cell })))
+);
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -61,7 +62,7 @@ export default function UserScreen({ givenBoard, onCalculate, onBack }: Props) {
     }
     const solution = solve(grid);
     if (!solution) {
-      setErrorMsg('Nessuna soluzione trovata. Potrebbe esserci un errore nei numeri fissi.');
+      setErrorMsg('Nessuna soluzione trovata. Controlla che i numeri inseriti siano corretti.');
       return;
     }
     onCalculate(board, solution);
@@ -97,9 +98,10 @@ export default function UserScreen({ givenBoard, onCalculate, onBack }: Props) {
         Calcola soluzione →
       </button>
 
-      <button className="btn-warning" onClick={onBack}>
-        ⚠️ C'è un errore nei numeri fissi
-      </button>
+<button className="btn-warning" onClick={onBack}>
+  ✏️ Modifica i numeri fissi
+</button>
+
     </div>
   );
 }

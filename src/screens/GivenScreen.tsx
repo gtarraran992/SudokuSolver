@@ -7,6 +7,7 @@ import './Screen.css';
 
 interface Props {
   onConfirm: (board: BoardState) => void;
+  initialBoard?: BoardState;
 }
 
 function emptyBoard(): BoardState {
@@ -15,8 +16,8 @@ function emptyBoard(): BoardState {
   );
 }
 
-export default function GivenScreen({ onConfirm }: Props) {
-  const [board, setBoard] = useState<BoardState>(emptyBoard());
+export default function GivenScreen({ onConfirm, initialBoard }: Props) {
+  const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard());
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 

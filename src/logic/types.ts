@@ -1,6 +1,6 @@
 export type CellValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 export type Grid = CellValue[][];
-export type CellType = 'given' | 'user' | 'empty';
+export type CellType = 'given' | 'user' | 'hint' | 'solution' | 'empty';
 
 export interface CellState {
   value: CellValue;

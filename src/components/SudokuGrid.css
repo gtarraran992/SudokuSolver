@@ -44,3 +44,5 @@
 .text-given { color: #2C2C2A; font-weight: 600; }
 .text-user  { color: #185FA5; font-weight: 500; }
 .text-error { color: #A32D2D; }
+.text-hint { color: #1D9E75; font-weight: 500; }
+.text-solution { color: #A32D2D; font-weight: 500; }

@@ -172,3 +172,15 @@
   font-weight: 600;
   color: #085041;
 }
+
+.btn-solution {
+  background: transparent;
+  border: 1px solid #E8A0A0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #A32D2D;
+  cursor: pointer;
+  width: 100%;
+}
+.btn-solution:hover { background: #FCEBEB; }

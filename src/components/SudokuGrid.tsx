@@ -48,6 +48,8 @@ export default function SudokuGrid({
     if (cell.isError) return 'text-error';
     if (cell.type === 'given') return 'text-given';
     if (cell.type === 'user') return 'text-user';
+    if (cell.type === 'hint') return 'text-hint';
+    if (cell.type === 'solution') return 'text-solution';
     return '';
   }
 
