@@ -4,19 +4,23 @@ import Numpad from '../components/Numpad';
 import { BoardState, CellState, CellValue, Grid } from '../logic/types';
 import { validateGrid } from '../logic/validator';
 import { solve } from '../logic/solver';
+import { useTranslation } from 'react-i18next';
 import './Screen.css';
+import './SettingsScreen.css';
 
 interface Props {
   givenBoard: BoardState;
   initialBoard?: BoardState;
   onCalculate: (board: BoardState, solution: Grid) => void;
   onBack: () => void;
+  onSettings: () => void;
 }
 
-export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBack }: Props) {
-const [board, setBoard] = useState<BoardState>(
-  initialBoard ?? givenBoard.map(row => row.map(cell => ({ ...cell })))
-);
+export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBack, onSettings }: Props) {
+  const { t } = useTranslation();
+  const [board, setBoard] = useState<BoardState>(
+    initialBoard ?? givenBoard.map(row => row.map(cell => ({ ...cell })))
+  );
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -57,29 +61,32 @@ const [board, setBoard] = useState<BoardState>(
         validation.errors.forEach(e => { next[e.row][e.col].isError = true; });
         return next;
       });
-      setErrorMsg('Conflitto trovato. Controlla le celle rosse.');
+      setErrorMsg(t('user.errorConflict'));
       return;
     }
     const solution = solve(grid);
     if (!solution) {
-      setErrorMsg('Nessuna soluzione trovata. Controlla che i numeri inseriti siano corretti.');
+      setErrorMsg(t('user.errorNoSolution'));
       return;
     }
     onCalculate(board, solution);
-  }, [board, onCalculate]);
+  }, [board, onCalculate, t]);
 
   const userCount = board.flat().filter((c: CellState) => c.type === 'user').length;
 
   return (
     <div className="screen">
       <div className="screen-header">
-        <h1>Sudoku Hint</h1>
-        <span className="step-badge">Passo 2 di 2</span>
+        <h1>{t('appName')}</h1>
+      </div>
+
+      <div className="step-row">
+        <span className="step-badge">{t('user.step')}</span>
       </div>
 
       <div className="card card-blue">
-        <h3>Inserisci i numeri che hai già risolto</h3>
-        <p>Aggiungi in blu i numeri che sei già riuscito a trovare da solo, poi calcola la soluzione.</p>
+        <h3>{t('user.cardTitle')}</h3>
+        <p>{t('user.cardDesc')}</p>
       </div>
 
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
@@ -91,17 +98,20 @@ const [board, setBoard] = useState<BoardState>(
       <Numpad onNumber={handleNumber} onErase={handleErase} color="#185FA5" />
 
       <p className="counter">
-        {userCount === 0 ? 'Inserisci almeno un numero per procedere' : `${userCount} numeri aggiunti`}
+        {userCount === 0 ? t('user.counterZero') : t('user.counter', { count: userCount })}
       </p>
 
       <button className="btn-primary" onClick={handleCalculate} disabled={userCount === 0}>
-        Calcola soluzione →
+        {t('user.calculate')}
       </button>
 
-<button className="btn-warning" onClick={onBack}>
-  ✏️ Modifica i numeri fissi
-</button>
+      <button className="btn-warning" onClick={onBack}>
+        {t('user.editGiven')}
+      </button>
 
+      <div className="settings-fab">
+        <button className="btn-settings" onClick={onSettings}>⚙️</button>
+      </div>
     </div>
   );
 }

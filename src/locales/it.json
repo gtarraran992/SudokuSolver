@@ -1,0 +1,60 @@
+{
+  "appName": "Sudoku Hint",
+
+  "given": {
+    "step": "Passo 1 di 2",
+    "cardTitle": "Numeri della griglia",
+    "cardDesc": "Inserisci i numeri già presenti nella griglia del sudoku.",
+    "cardDesc2": "Potrai modificarli in qualsiasi momento tornando a questa schermata.",
+    "counter": "{{count}} numeri inseriti",
+    "counterMin": "(minimo 17)",
+    "counterOk": "✓",
+    "confirm": "Conferma numeri fissi →",
+    "restart": "Ricomincia",
+    "restartConfirm": "Vuoi cancellare tutti i numeri inseriti?",
+    "errorConflicts": "Trovati {{count}} conflitti. Controlla le celle rosse."
+  },
+
+  "user": {
+    "step": "Passo 2 di 2",
+    "cardTitle": "Inserisci i numeri che hai già risolto",
+    "cardDesc": "Aggiungi i numeri che sei già riuscito a trovare da solo, poi calcola la soluzione.",
+    "counterZero": "Inserisci almeno un numero per procedere",
+    "counter": "{{count}} numeri aggiunti",
+    "calculate": "Calcola soluzione →",
+    "editGiven": "✏️ Modifica i numeri fissi",
+    "errorConflict": "Conflitto trovato. Controlla le celle rosse.",
+    "errorNoSolution": "Nessuna soluzione trovata. Controlla che i numeri inseriti siano corretti."
+  },
+
+  "hint": {
+    "title": "Indizi",
+    "back": "← Indietro",
+    "solved": "🎉 Puzzle completato! Ottimo lavoro!",
+    "showSolution": "👁 Mostra soluzione completa",
+    "hideSolution": "🙈 Nascondi soluzione",
+    "showSolutionConfirm": "Vuoi vedere la soluzione completa? I numeri mancanti appariranno in rosso.",
+    "newGame": "↺ Nuova partita",
+    "level1": "Dove guardare",
+    "level2": "Quale tecnica",
+    "level3": "Risposta",
+    "askHint": "💡 Chiedi indizio",
+    "hintsUsed": "Indizi usati: {{count}}",
+    "hintPlaceholder": "Premi \"Chiedi indizio\" per ricevere aiuto"
+  },
+
+"settings": {
+  "title": "Impostazioni",
+  "back": "Indietro",
+  "language": "LINGUA",
+  "italian": "Italiano",
+  "english": "English",
+  "legal": "LEGALE",
+  "privacy": "Privacy Policy",
+  "terms": "Termini di Servizio",
+  "support": "SUPPORTO",
+  "reportProblem": "Segnala un problema",
+  "privacyTitle": "Privacy Policy",
+  "termsTitle": "Termini di Servizio"
+}
+}

@@ -4,8 +4,9 @@ import HintPanel from '../components/HintPanel';
 import Numpad from '../components/Numpad';
 import { BoardState, CellState, CellValue, Grid, Hint, HintLevel } from '../logic/types';
 import { getHint } from '../logic/hintEngine';
+import { useTranslation } from 'react-i18next';
 import './Screen.css';
-
+import './SettingsScreen.css';
 
 interface Props {
   initialBoard: BoardState;
@@ -13,8 +14,11 @@ interface Props {
   onBack: () => void;
   onReset: () => void;
   onBoardChange: (board: BoardState) => void;
+  onSettings: () => void;
 }
-export default function HintScreen({ initialBoard, solution, onBack, onReset, onBoardChange }: Props) {
+
+export default function HintScreen({ initialBoard, solution, onBack, onReset, onBoardChange, onSettings }: Props) {
+  const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(
     initialBoard.map(r => r.map(c => ({ ...c, isError: false })))
   );
@@ -22,10 +26,14 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
   const [currentHint, setCurrentHint] = useState<Hint | null>(null);
   const [hintLevel, setHintLevel] = useState<HintLevel>(1);
   const [hintCount, setHintCount] = useState(0);
+  const [solutionShown, setSolutionShown] = useState(false);
+  const [boardBeforeSolution, setBoardBeforeSolution] = useState<BoardState | null>(null);
 
   useEffect(() => {
-   onBoardChange(board);
-  }, [board]);
+    if (!solutionShown) {
+      onBoardChange(board);
+    }
+  }, [board, solutionShown]);
 
   const currentGrid = () => board.map(row => row.map(cell => cell.value)) as Grid;
 
@@ -35,7 +43,7 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
     setCurrentHint(null);
   }, [board]);
 
-const handleNumber = useCallback((num: CellValue) => {
+  const handleNumber = useCallback((num: CellValue) => {
     if (!selectedCell) return;
     const { row, col } = selectedCell;
     if (board[row][col].type === 'given') return;
@@ -67,17 +75,28 @@ const handleNumber = useCallback((num: CellValue) => {
     if (hint) setSelectedCell({ row: hint.targetRow, col: hint.targetCol });
   }, [board, solution, hintLevel]);
 
-const handleShowSolution = useCallback(() => {
-  if (!confirm('Vuoi vedere la soluzione completa? I numeri mancanti appariranno in rosso.')) return;
-  setBoard(prev => {
-    const next = prev.map((r, ri) => r.map((c, ci) => {
-      if (c.type === 'given') return c;
-      if (c.value !== 0 && !c.isError) return c; // già compilata correttamente, lascia com'è
-      return { value: solution[ri][ci], type: 'solution' as const, isError: false };
-    }));
-    return next;
-  });
-}, [solution]);
+  const handleShowSolution = useCallback(() => {
+    if (!confirm(t('hint.showSolutionConfirm'))) return;
+    setBoardBeforeSolution(board.map(r => r.map(c => ({ ...c }))));
+    setSolutionShown(true);
+    setBoard(prev => {
+      const next = prev.map((r, ri) => r.map((c, ci) => {
+        if (c.type === 'given') return c;
+        if (c.value !== 0 && !c.isError) return c;
+        return { value: solution[ri][ci], type: 'solution' as const, isError: false };
+      }));
+      return next;
+    });
+  }, [solution, board, t]);
+
+  const handleHideSolution = useCallback(() => {
+    if (boardBeforeSolution) {
+      setBoard(boardBeforeSolution);
+      onBoardChange(boardBeforeSolution);
+      setBoardBeforeSolution(null);
+      setSolutionShown(false);
+    }
+  }, [boardBeforeSolution, onBoardChange]);
 
   const isSolved = board.flat().every((cell: CellState, i: number) => cell.value === solution.flat()[i]);
   const filledCount = board.flat().filter((c: CellState) => c.value !== 0).length;
@@ -86,8 +105,8 @@ const handleShowSolution = useCallback(() => {
   return (
     <div className="screen">
       <div className="hint-screen-header">
-        <button className="btn-back" onClick={onBack}>← Indietro</button>
-        <h2>Indizi</h2>
+        <button className="btn-back" onClick={onBack}>{t('hint.back')}</button>
+        <h2>{t('hint.title')}</h2>
         <span className="progress-pill">{progress}%</span>
       </div>
 
@@ -96,7 +115,7 @@ const handleShowSolution = useCallback(() => {
       </div>
 
       {isSolved && (
-        <div className="solved-banner">🎉 Puzzle completato! Ottimo lavoro!</div>
+        <div className="solved-banner">{t('hint.solved')}</div>
       )}
 
       <div className="grid-wrapper">
@@ -122,11 +141,21 @@ const handleShowSolution = useCallback(() => {
         hintCount={hintCount}
       />
 
-      <button className="btn-solution" onClick={handleShowSolution}>
-       👁 Mostra soluzione completa
-      </button>
+      {!solutionShown ? (
+        <button className="btn-solution" onClick={handleShowSolution}>
+          {t('hint.showSolution')}
+        </button>
+      ) : (
+        <button className="btn-solution" onClick={handleHideSolution}>
+          {t('hint.hideSolution')}
+        </button>
+      )}
 
-      <button className="btn-ghost" onClick={onReset}>↺ Nuova partita</button>
+      <button className="btn-ghost" onClick={onReset}>{t('hint.newGame')}</button>
+
+      <div className="settings-fab">
+        <button className="btn-settings" onClick={onSettings}>⚙️</button>
+      </div>
     </div>
   );
 }

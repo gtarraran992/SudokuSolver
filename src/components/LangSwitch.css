@@ -1,0 +1,16 @@
+.lang-switch {
+  background: transparent;
+  border: 1px solid #B4B2A9;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5F5E5A;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.lang-switch:hover {
+  background: #F1EFE8;
+  border-color: #5F5E5A;
+}

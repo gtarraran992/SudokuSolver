@@ -3,11 +3,14 @@ import SudokuGrid from '../components/SudokuGrid';
 import Numpad from '../components/Numpad';
 import { BoardState, CellState, CellValue, Grid } from '../logic/types';
 import { validateGrid } from '../logic/validator';
+import { useTranslation } from 'react-i18next';
 import './Screen.css';
+import './SettingsScreen.css';
 
 interface Props {
   onConfirm: (board: BoardState) => void;
   initialBoard?: BoardState;
+  onSettings: () => void;
 }
 
 function emptyBoard(): BoardState {
@@ -16,7 +19,8 @@ function emptyBoard(): BoardState {
   );
 }
 
-export default function GivenScreen({ onConfirm, initialBoard }: Props) {
+export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Props) {
+  const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard());
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -55,19 +59,19 @@ export default function GivenScreen({ onConfirm, initialBoard }: Props) {
         validation.errors.forEach(e => { next[e.row][e.col].isError = true; });
         return next;
       });
-      setErrorMsg(`Trovati ${validation.errors.length} conflitti. Controlla le celle rosse.`);
+      setErrorMsg(t('given.errorConflicts', { count: validation.errors.length }));
       return;
     }
     onConfirm(board);
-  }, [board, onConfirm]);
+  }, [board, onConfirm, t]);
 
   const handleReset = useCallback(() => {
-    if (confirm('Vuoi cancellare tutti i numeri inseriti?')) {
+    if (confirm(t('given.restartConfirm'))) {
       setBoard(emptyBoard());
       setSelectedCell(null);
       setErrorMsg('');
     }
-  }, []);
+  }, [t]);
 
   const filledCount = board.flat().filter(c => c.value !== 0).length;
   const canConfirm = filledCount >= 17;
@@ -75,13 +79,17 @@ export default function GivenScreen({ onConfirm, initialBoard }: Props) {
   return (
     <div className="screen">
       <div className="screen-header">
-        <h1>Sudoku Hint</h1>
-        <span className="step-badge">Passo 1 di 2</span>
+        <h1>{t('appName')}</h1>
+      </div>
+
+      <div className="step-row">
+        <span className="step-badge">{t('given.step')}</span>
       </div>
 
       <div className="card card-gray">
-        <h3>Inserisci i numeri fissi</h3>
-        <p>Inserisci tutti i numeri già presenti nella griglia. Una volta confermati non potranno essere modificati.</p>
+        <h3>{t('given.cardTitle')}</h3>
+        <p>{t('given.cardDesc')}</p>
+        <p>{t('given.cardDesc2')}</p>
       </div>
 
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
@@ -92,13 +100,19 @@ export default function GivenScreen({ onConfirm, initialBoard }: Props) {
 
       <Numpad onNumber={handleNumber} onErase={handleErase} color="#2C2C2A" />
 
-      <p className="counter">{filledCount} numeri inseriti {filledCount >= 17 ? '✓' : '(minimo 17)'}</p>
+      <p className="counter">
+        {t('given.counter', { count: filledCount })} {filledCount >= 17 ? t('given.counterOk') : t('given.counterMin')}
+      </p>
 
       <button className="btn-primary" onClick={handleConfirm} disabled={!canConfirm}>
-        Conferma numeri fissi →
+        {t('given.confirm')}
       </button>
 
-      <button className="btn-ghost" onClick={handleReset}>Ricomincia</button>
+      <button className="btn-ghost" onClick={handleReset}>{t('given.restart')}</button>
+
+      <div className="settings-fab">
+        <button className="btn-settings" onClick={onSettings}>⚙️</button>
+      </div>
     </div>
   );
 }

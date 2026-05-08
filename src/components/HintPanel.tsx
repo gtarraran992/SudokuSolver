@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Hint, HintLevel } from '../logic/types';
 import './HintPanel.css';
 
@@ -9,11 +10,18 @@ interface Props {
   hintCount: number;
 }
 
-const levelLabels: Record<HintLevel, string> = { 1: 'Dove guardare', 2: 'Quale tecnica', 3: 'La risposta' };
 const levelColors: Record<HintLevel, string> = { 1: '#1D9E75', 2: '#BA7517', 3: '#D85A30' };
 const levelBg: Record<HintLevel, string> = { 1: '#E1F5EE', 2: '#FAEEDA', 3: '#FAECE7' };
 
 export default function HintPanel({ hint, currentLevel, onLevelChange, onRequestHint, hintCount }: Props) {
+  const { t } = useTranslation();
+
+  const levelLabels: Record<HintLevel, string> = {
+    1: t('hint.level1'),
+    2: t('hint.level2'),
+    3: t('hint.level3'),
+  };
+
   return (
     <div className="hint-panel">
       <div className="level-row">
@@ -39,13 +47,13 @@ export default function HintPanel({ hint, currentLevel, onLevelChange, onRequest
         </div>
       ) : (
         <div className="hint-empty">
-          <p>Premi "Chiedi indizio" per ricevere aiuto</p>
+          <p>{t('hint.hintPlaceholder')}</p>
         </div>
       )}
 
-      <button className="hint-button" onClick={onRequestHint}>💡 Chiedi indizio</button>
+      <button className="hint-button" onClick={onRequestHint}>{t('hint.askHint')}</button>
 
-      {hintCount > 0 && <p className="hint-count">Indizi usati: {hintCount}</p>}
+      {hintCount > 0 && <p className="hint-count">{t('hint.hintsUsed', { count: hintCount })}</p>}
     </div>
   );
 }

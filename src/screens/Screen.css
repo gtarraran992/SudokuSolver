@@ -184,3 +184,14 @@
   width: 100%;
 }
 .btn-solution:hover { background: #FCEBEB; }
+
+.step-row {
+  display: flex;
+  justify-content: center;
+}
+
+.hint-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,0 +1,61 @@
+{
+  "appName": "Sudoku Hint",
+
+  "given": {
+    "step": "Step 1 of 2",
+    "cardTitle": "Grid numbers",
+    "cardDesc": "Enter the numbers already present in the sudoku grid.",
+    "cardDesc2": "You can edit them at any time by coming back to this screen.",
+    "counter": "{{count}} numbers entered",
+    "counterMin": "(minimum 17)",
+    "counterOk": "✓",
+    "confirm": "Confirm fixed numbers →",
+    "restart": "Start over",
+    "restartConfirm": "Do you want to clear all entered numbers?",
+    "errorConflicts": "Found {{count}} conflicts. Check the red cells."
+  },
+
+  "user": {
+    "step": "Step 2 of 2",
+    "cardTitle": "Enter the numbers you already solved",
+    "cardDesc": "Add the numbers you already found on your own, then calculate the solution.",
+    "counterZero": "Enter at least one number to proceed",
+    "counter": "{{count}} numbers added",
+    "calculate": "Calculate solution →",
+    "editGiven": "✏️ Edit fixed numbers",
+    "errorConflict": "Conflict found. Check the red cells.",
+    "errorNoSolution": "No solution found. Check that all entered numbers are correct."
+  },
+
+  "hint": {
+    "title": "Hints",
+    "back": "← Back",
+    "solved": "🎉 Puzzle completed! Great job!",
+    "showSolution": "👁 Show complete solution",
+    "hideSolution": "🙈 Hide solution",
+    "showSolutionConfirm": "Do you want to see the complete solution? Missing numbers will appear in red.",
+    "newGame": "↺ New game",
+    "level1": "Where to look",
+    "level2": "Which technique",
+    "level3": "Answer",
+    "askHint": "💡 Ask for a hint",
+    "hintsUsed": "Hints used: {{count}}",
+    "hintPlaceholder": "Press \"Ask for a hint\" to get help"
+  },
+
+"settings": {
+  "title": "Settings",
+  "back": "Back",
+  "language": "LANGUAGE",
+  "italian": "Italiano",
+  "english": "English",
+  "legal": "LEGAL",
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+  "support": "SUPPORT",
+  "reportProblem": "Report a problem",
+  "privacyTitle": "Privacy Policy",
+  "termsTitle": "Terms of Service"
+}
+
+}
