@@ -15,6 +15,7 @@ const STORAGE_KEY = 'sudokuhint_state';
 interface SavedState {
   screen: Screen;
   gridSize: GridSize;
+  isDiagonal: boolean;
   givenBoard: BoardState | null;
   userBoard: BoardState | null;
   solution: Grid | null;
@@ -28,10 +29,10 @@ function loadState(): SavedState {
       if (['settings', 'privacy', 'terms'].includes(parsed.screen)) {
         parsed.screen = 'home';
       }
-      return parsed;
+      return { isDiagonal: false, ...parsed };
     }
   } catch {}
-  return { screen: 'home', gridSize: 9, givenBoard: null, userBoard: null, solution: null };
+  return { screen: 'home', gridSize: 9, isDiagonal: false, givenBoard: null, userBoard: null, solution: null };
 }
 
 export default function App() {
@@ -39,13 +40,14 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>(saved.screen);
   const [prevScreen, setPrevScreen] = useState<Screen>('home');
   const [gridSize, setGridSize] = useState<GridSize>(saved.gridSize ?? 9);
+  const [isDiagonal, setIsDiagonal] = useState<boolean>(saved.isDiagonal ?? false);
   const [givenBoard, setGivenBoard] = useState<BoardState | null>(saved.givenBoard);
   const [userBoard, setUserBoard] = useState<BoardState | null>(saved.userBoard);
   const [solution, setSolution] = useState<Grid | null>(saved.solution);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, gridSize, givenBoard, userBoard, solution }));
-  }, [screen, gridSize, givenBoard, userBoard, solution]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, gridSize, isDiagonal, givenBoard, userBoard, solution }));
+  }, [screen, gridSize, isDiagonal, givenBoard, userBoard, solution]);
 
   const handleReset = () => {
     localStorage.removeItem(STORAGE_KEY);
@@ -60,8 +62,9 @@ export default function App() {
     setScreen('settings');
   };
 
-  const handleSelectSize = (size: GridSize) => {
+  const handleSelectSize = (size: GridSize, diagonal: boolean = false) => {
     setGridSize(size);
+    setIsDiagonal(diagonal);
     setGivenBoard(null);
     setUserBoard(null);
     setSolution(null);
@@ -79,6 +82,7 @@ export default function App() {
       {screen === 'given' && (
         <GivenScreen
           gridSize={gridSize}
+          isDiagonal={isDiagonal}
           initialBoard={givenBoard ?? undefined}
           onConfirm={(board) => {
             const givenChanged = JSON.stringify(board) !== JSON.stringify(givenBoard);
@@ -96,6 +100,7 @@ export default function App() {
       {screen === 'user' && givenBoard && (
         <UserScreen
           gridSize={gridSize}
+          isDiagonal={isDiagonal}
           givenBoard={givenBoard}
           initialBoard={userBoard ?? undefined}
           onCalculate={(board, sol) => {
@@ -110,6 +115,7 @@ export default function App() {
       {screen === 'hint' && userBoard && solution && (
         <HintScreen
           gridSize={gridSize}
+          isDiagonal={isDiagonal}
           initialBoard={userBoard}
           solution={solution}
           onBack={() => setScreen('user')}

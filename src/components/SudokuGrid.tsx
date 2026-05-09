@@ -12,19 +12,24 @@ interface Props {
   hintCell?: { row: number; col: number };
   onCellPress: (row: number, col: number) => void;
   gridSize: GridSize;
+  isDiagonal?: boolean;
 }
 
 export default function SudokuGrid({
   board, selectedCell, highlightRows = [], highlightCols = [],
-  highlightBoxRow, highlightBoxCol, hintCell, onCellPress, gridSize,
+  highlightBoxRow, highlightBoxCol, hintCell, onCellPress, gridSize, isDiagonal = false,
 }: Props) {
 
   const { boxRows, boxCols } = getBoxDimensions(gridSize);
 
-  // Calcola cellSize in base alla viewport
-  const maxGridWidth = Math.min(window.innerWidth - 32, 480); // 32px di padding laterale
+  const maxGridWidth = Math.min(window.innerWidth - 32, 480);
   const cellSize = Math.floor(maxGridWidth / gridSize);
   const fontSize = cellSize < 30 ? cellSize * 0.45 : cellSize * 0.5;
+
+  function isOnDiagonal(r: number, c: number): boolean {
+    if (!isDiagonal) return false;
+    return r === c || r + c === gridSize - 1;
+  }
 
   function getCellClass(r: number, c: number): string {
     const cell = board[r][c];
@@ -39,6 +44,7 @@ export default function SudokuGrid({
       (Math.floor(selectedCell.row / boxRows) === Math.floor(r / boxRows) &&
         Math.floor(selectedCell.col / boxCols) === Math.floor(c / boxCols))
     );
+    const isDiagCell = isOnDiagonal(r, c);
 
     const borderRight = ((c + 1) % boxCols === 0 && c !== gridSize - 1) ? 'border-box-right' : '';
     const borderBottom = ((r + 1) % boxRows === 0 && r !== gridSize - 1) ? 'border-box-bottom' : '';
@@ -49,6 +55,7 @@ export default function SudokuGrid({
     else if (isSelected) state = 'cell-selected';
     else if (isHighlighted) state = 'cell-highlighted';
     else if (isSameGroup) state = 'cell-same-group';
+    else if (isDiagCell) state = 'cell-diagonal';
 
     return `cell ${borderRight} ${borderBottom} ${state}`.trim();
   }
@@ -71,10 +78,10 @@ export default function SudokuGrid({
             <div
               key={c}
               className={getCellClass(r, c)}
-              style={{ 
-               width: cellSize, 
-               height: cellSize, 
-               fontSize: fontSize
+              style={{
+                width: cellSize,
+                height: cellSize,
+                fontSize: fontSize,
               }}
               onClick={() => onCellPress(r, c)}
             >

@@ -10,6 +10,7 @@ import './SettingsScreen.css';
 
 interface Props {
   gridSize: GridSize;
+  isDiagonal: boolean;
   givenBoard: BoardState;
   initialBoard?: BoardState;
   onCalculate: (board: BoardState, solution: Grid) => void;
@@ -17,7 +18,7 @@ interface Props {
   onSettings: () => void;
 }
 
-export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalculate, onBack, onSettings }: Props) {
+export default function UserScreen({ gridSize, isDiagonal, givenBoard, initialBoard, onCalculate, onBack, onSettings }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(
     initialBoard ?? givenBoard.map(row => row.map(cell => ({ ...cell })))
@@ -55,7 +56,7 @@ export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalcu
 
   const handleCalculate = useCallback(() => {
     const grid = board.map(r => r.map(c => c.value)) as Grid;
-    const validation = validateGrid(grid, gridSize);
+    const validation = validateGrid(grid, gridSize, isDiagonal);
     if (!validation.valid) {
       setBoard(prev => {
         const next = prev.map(r => r.map(c => ({ ...c, isError: false })));
@@ -65,13 +66,13 @@ export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalcu
       setErrorMsg(t('user.errorConflict'));
       return;
     }
-    const solution = solve(grid, gridSize);
+    const solution = solve(grid, gridSize, isDiagonal);
     if (!solution) {
       setErrorMsg(t('user.errorNoSolution'));
       return;
     }
     onCalculate(board, solution);
-  }, [board, gridSize, onCalculate, t]);
+  }, [board, gridSize, isDiagonal, onCalculate, t]);
 
   const userCount = board.flat().filter((c: CellState) => c.type === 'user').length;
 
@@ -79,7 +80,7 @@ export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalcu
     <div className="screen">
       <div className="screen-header">
         <button className="btn-back" onClick={onBack}>← {t('settings.back')}</button>
-        <h1>{gridSize}x{gridSize}</h1>
+        <h1>{gridSize}x{gridSize}{isDiagonal ? ' ✖️' : ''}</h1>
       </div>
 
       <div className="step-row">
@@ -94,7 +95,13 @@ export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalcu
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
 
       <div className="grid-wrapper">
-        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} gridSize={gridSize} />
+        <SudokuGrid
+          board={board}
+          selectedCell={selectedCell}
+          onCellPress={handleCellPress}
+          gridSize={gridSize}
+          isDiagonal={isDiagonal}
+        />
       </div>
 
       <Numpad onNumber={handleNumber} onErase={handleErase} color="#185FA5" gridSize={gridSize} />

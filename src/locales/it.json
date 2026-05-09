@@ -18,7 +18,12 @@
 "diff12": "Esperto",
 "diff16": "Estremo",
 "desc12": "Griglia 12x12, numeri da 1 a 12",
-"desc16": "Griglia 16x16, numeri da 1 a 16"
+"desc16": "Griglia 16x16, numeri da 1 a 16",
+"diff9d": "Diagonale",
+"desc9d": "Griglia 9x9 con vincolo sulle diagonali",
+"modal9Title": "Variante 9x9",
+"modal9Subtitle": "Scegli la modalità di gioco",
+"modalClose": "Annulla"
 },
 
   "given": {

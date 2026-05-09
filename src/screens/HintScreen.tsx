@@ -9,6 +9,7 @@ import './Screen.css';
 
 interface Props {
   gridSize: GridSize;
+  isDiagonal: boolean;
   initialBoard: BoardState;
   solution: Grid;
   onBack: () => void;
@@ -16,7 +17,7 @@ interface Props {
   onBoardChange: (board: BoardState) => void;
 }
 
-export default function HintScreen({ gridSize, initialBoard, solution, onBack, onReset, onBoardChange }: Props) {
+export default function HintScreen({ gridSize, isDiagonal, initialBoard, solution, onBack, onReset, onBoardChange }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(
     initialBoard.map(r => r.map(c => ({ ...c, isError: false })))
@@ -68,11 +69,11 @@ export default function HintScreen({ gridSize, initialBoard, solution, onBack, o
   }, [selectedCell, board]);
 
   const handleRequestHint = useCallback(() => {
-    const hint = getHint(currentGrid(), solution, hintLevel, gridSize);
+    const hint = getHint(currentGrid(), solution, hintLevel, gridSize, isDiagonal);
     setCurrentHint(hint);
     setHintCount(c => c + 1);
     if (hint) setSelectedCell({ row: hint.targetRow, col: hint.targetCol });
-  }, [board, solution, hintLevel, gridSize]);
+  }, [board, solution, hintLevel, gridSize, isDiagonal]);
 
   const handleShowSolution = useCallback(() => {
     if (!confirm(t('hint.showSolutionConfirm'))) return;
@@ -106,7 +107,7 @@ export default function HintScreen({ gridSize, initialBoard, solution, onBack, o
     <div className="screen">
       <div className="hint-screen-header">
         <button className="btn-back" onClick={onBack}>{t('hint.back')}</button>
-        <h2>{t('hint.title')} {gridSize}x{gridSize}</h2>
+        <h2>{t('hint.title')} {gridSize}x{gridSize}{isDiagonal ? ' ✖️' : ''}</h2>
         <span className="progress-pill">{progress}%</span>
       </div>
 
@@ -129,6 +130,7 @@ export default function HintScreen({ gridSize, initialBoard, solution, onBack, o
           hintCell={currentHint ? { row: currentHint.targetRow, col: currentHint.targetCol } : undefined}
           onCellPress={handleCellPress}
           gridSize={gridSize}
+          isDiagonal={isDiagonal}
         />
       </div>
 

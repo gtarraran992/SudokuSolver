@@ -37,6 +37,7 @@
 .cell-highlighted { background: #E1F5EE; }
 .cell-hint { background: #FAEEDA; }
 .cell-error { background: #FCEBEB; }
+.cell-diagonal { background: #EDE8F5; }
 
 .text-given { color: #2C2C2A; font-weight: 600; }
 .text-user  { color: #185FA5; font-weight: 500; }

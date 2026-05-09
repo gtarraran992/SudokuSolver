@@ -9,6 +9,7 @@ import './SettingsScreen.css';
 
 interface Props {
   gridSize: GridSize;
+  isDiagonal: boolean;
   onConfirm: (board: BoardState) => void;
   initialBoard?: BoardState;
   onBack: () => void;
@@ -21,14 +22,13 @@ function emptyBoard(size: GridSize): BoardState {
   );
 }
 
-// Minimo celle per abilitare conferma (circa 1/4 della griglia)
 function minCells(size: GridSize): number {
   if (size === 4) return 4;
   if (size === 6) return 8;
   return 17;
 }
 
-export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack }: Props) {
+export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBoard, onBack }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard(gridSize));
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
@@ -61,7 +61,7 @@ export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack 
 
   const handleConfirm = useCallback(() => {
     const grid = board.map(r => r.map(c => c.value)) as Grid;
-    const validation = validateGrid(grid, gridSize);
+    const validation = validateGrid(grid, gridSize, isDiagonal);
     if (!validation.valid) {
       setBoard(prev => {
         const next = prev.map(r => r.map(c => ({ ...c, isError: false })));
@@ -72,7 +72,7 @@ export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack 
       return;
     }
     onConfirm(board);
-  }, [board, onConfirm, gridSize, t]);
+  }, [board, onConfirm, gridSize, isDiagonal, t]);
 
   const handleReset = useCallback(() => {
     if (confirm(t('given.restartConfirm'))) {
@@ -90,7 +90,7 @@ export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack 
     <div className="screen">
       <div className="screen-header">
         <button className="btn-back" onClick={onBack}>← {t('settings.back')}</button>
-        <h1>{gridSize}x{gridSize}</h1>
+        <h1>{gridSize}x{gridSize}{isDiagonal ? ' ✖️' : ''}</h1>
       </div>
 
       <div className="step-row">
@@ -106,7 +106,13 @@ export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack 
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
 
       <div className="grid-wrapper">
-        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} gridSize={gridSize} />
+        <SudokuGrid
+          board={board}
+          selectedCell={selectedCell}
+          onCellPress={handleCellPress}
+          gridSize={gridSize}
+          isDiagonal={isDiagonal}
+        />
       </div>
 
       <Numpad onNumber={handleNumber} onErase={handleErase} color="#2C2C2A" gridSize={gridSize} />
@@ -120,7 +126,6 @@ export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack 
       </button>
 
       <button className="btn-ghost" onClick={handleReset}>{t('given.restart')}</button>
-
     </div>
   );
 }

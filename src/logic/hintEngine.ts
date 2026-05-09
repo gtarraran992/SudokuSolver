@@ -1,8 +1,15 @@
 import { Grid, GridSize, Hint, CellValue } from './types';
-import { getCandidates, getBoxDimensions } from './validator';
+import { getCandidates, getCandidatesDiagonal, getBoxDimensions } from './validator';
 
-export function getHint(grid: Grid, solution: Grid, level: 1 | 2 | 3, size: GridSize): Hint | null {
-  const result = findNakedSingle(grid, size) ?? findHiddenSingle(grid, size) ?? findAnyEmpty(grid, solution, size);
+export function getHint(grid: Grid, solution: Grid, level: 1 | 2 | 3, size: GridSize, isDiagonal: boolean = false): Hint | null {
+  const getCands = (g: Grid, r: number, c: number) =>
+    isDiagonal ? getCandidatesDiagonal(g, r, c, size) : getCandidates(g, r, c, size);
+
+  const result =
+    findNakedSingle(grid, size, getCands) ??
+    findHiddenSingle(grid, size, getCands) ??
+    findAnyEmpty(grid, solution, size, getCands);
+
   if (!result) return null;
   return buildHint(result, level);
 }
@@ -13,12 +20,16 @@ interface TechniqueResult {
   context: { highlightRows?: number[]; highlightCols?: number[]; highlightBoxRow?: number; highlightBoxCol?: number; };
 }
 
-function findNakedSingle(grid: Grid, size: GridSize): TechniqueResult | null {
+function findNakedSingle(
+  grid: Grid,
+  size: GridSize,
+  getCands: (g: Grid, r: number, c: number) => number[]
+): TechniqueResult | null {
   const { boxRows, boxCols } = getBoxDimensions(size);
   for (let r = 0; r < size; r++)
     for (let c = 0; c < size; c++) {
       if (grid[r][c] !== 0) continue;
-      const candidates = getCandidates(grid, r, c, size);
+      const candidates = getCands(grid, r, c);
       if (candidates.length === 1)
         return {
           technique: 'naked_single', row: r, col: c, answer: candidates[0] as CellValue,
@@ -32,7 +43,11 @@ function findNakedSingle(grid: Grid, size: GridSize): TechniqueResult | null {
   return null;
 }
 
-function findHiddenSingle(grid: Grid, size: GridSize): TechniqueResult | null {
+function findHiddenSingle(
+  grid: Grid,
+  size: GridSize,
+  getCands: (g: Grid, r: number, c: number) => number[]
+): TechniqueResult | null {
   const { boxRows, boxCols } = getBoxDimensions(size);
 
   // Righe
@@ -41,7 +56,7 @@ function findHiddenSingle(grid: Grid, size: GridSize): TechniqueResult | null {
       if (grid[r].includes(num as CellValue)) continue;
       const pos = [];
       for (let c = 0; c < size; c++)
-        if (grid[r][c] === 0 && getCandidates(grid, r, c, size).includes(num)) pos.push(c);
+        if (grid[r][c] === 0 && getCands(grid, r, c).includes(num)) pos.push(c);
       if (pos.length === 1)
         return { technique: 'hidden_single', row: r, col: pos[0], answer: num as CellValue, context: { highlightRows: [r] } };
     }
@@ -53,7 +68,7 @@ function findHiddenSingle(grid: Grid, size: GridSize): TechniqueResult | null {
       if (colVals.includes(num as CellValue)) continue;
       const pos = [];
       for (let r = 0; r < size; r++)
-        if (grid[r][c] === 0 && getCandidates(grid, r, c, size).includes(num)) pos.push(r);
+        if (grid[r][c] === 0 && getCands(grid, r, c).includes(num)) pos.push(r);
       if (pos.length === 1)
         return { technique: 'hidden_single', row: pos[0], col: c, answer: num as CellValue, context: { highlightCols: [c] } };
     }
@@ -72,7 +87,7 @@ function findHiddenSingle(grid: Grid, size: GridSize): TechniqueResult | null {
         const pos: [number, number][] = [];
         for (let r = boxR * boxRows; r < boxR * boxRows + boxRows; r++)
           for (let c = boxC * boxCols; c < boxC * boxCols + boxCols; c++)
-            if (grid[r][c] === 0 && getCandidates(grid, r, c, size).includes(num)) pos.push([r, c]);
+            if (grid[r][c] === 0 && getCands(grid, r, c).includes(num)) pos.push([r, c]);
         if (pos.length === 1)
           return { technique: 'hidden_single', row: pos[0][0], col: pos[0][1], answer: num as CellValue, context: { highlightBoxRow: boxR, highlightBoxCol: boxC } };
       }
@@ -80,12 +95,17 @@ function findHiddenSingle(grid: Grid, size: GridSize): TechniqueResult | null {
   return null;
 }
 
-function findAnyEmpty(grid: Grid, solution: Grid, size: GridSize): TechniqueResult | null {
+function findAnyEmpty(
+  grid: Grid,
+  solution: Grid,
+  size: GridSize,
+  getCands: (g: Grid, r: number, c: number) => number[]
+): TechniqueResult | null {
   let bestRow = -1, bestCol = -1, min = size + 1;
   for (let r = 0; r < size; r++)
     for (let c = 0; c < size; c++) {
       if (grid[r][c] !== 0) continue;
-      const n = getCandidates(grid, r, c, size).length;
+      const n = getCands(grid, r, c).length;
       if (n < min) { min = n; bestRow = r; bestCol = c; }
     }
   if (bestRow === -1) return null;

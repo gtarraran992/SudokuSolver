@@ -1,6 +1,5 @@
 import { Grid, GridSize, ValidationResult } from './types';
 
-// Restituisce le dimensioni del box in base alla dimensione della griglia
 export function getBoxDimensions(size: GridSize): { boxRows: number; boxCols: number } {
   switch (size) {
     case 4:  return { boxRows: 2, boxCols: 2 };
@@ -11,7 +10,7 @@ export function getBoxDimensions(size: GridSize): { boxRows: number; boxCols: nu
   }
 }
 
-export function validateGrid(grid: Grid, size: GridSize): ValidationResult {
+export function validateGrid(grid: Grid, size: GridSize, isDiagonal: boolean = false): ValidationResult {
   const errors: ValidationResult['errors'] = [];
   const { boxRows, boxCols } = getBoxDimensions(size);
 
@@ -37,6 +36,20 @@ export function validateGrid(grid: Grid, size: GridSize): ValidationResult {
         for (let cc = boxC; cc < boxC + boxCols; cc++)
           if ((rr !== r || cc !== c) && grid[rr][cc] === val)
             errors.push({ row: r, col: c, reason: `Duplicato ${val} nel box` });
+
+      // Controlla diagonali (solo se isDiagonal)
+      if (isDiagonal) {
+        if (r === c) {
+          for (let i = 0; i < size; i++)
+            if (i !== r && grid[i][i] === val)
+              errors.push({ row: r, col: c, reason: `Duplicato ${val} nella diagonale principale` });
+        }
+        if (r + c === size - 1) {
+          for (let i = 0; i < size; i++)
+            if (i !== r && grid[i][size - 1 - i] === val)
+              errors.push({ row: r, col: c, reason: `Duplicato ${val} nella diagonale secondaria` });
+        }
+      }
     }
   }
 
@@ -66,6 +79,33 @@ export function getCandidates(grid: Grid, row: number, col: number, size: GridSi
   for (let r = boxR; r < boxR + boxRows; r++)
     for (let c = boxC; c < boxC + boxCols; c++)
       used.add(grid[r][c]);
+
+  return Array.from({ length: size }, (_, i) => i + 1).filter(n => !used.has(n));
+}
+
+export function getCandidatesDiagonal(grid: Grid, row: number, col: number, size: GridSize): number[] {
+  if (grid[row][col] !== 0) return [];
+  const { boxRows, boxCols } = getBoxDimensions(size);
+  const used = new Set<number>();
+
+  for (let i = 0; i < size; i++) {
+    used.add(grid[row][i]);
+    used.add(grid[i][col]);
+  }
+
+  const boxR = Math.floor(row / boxRows) * boxRows;
+  const boxC = Math.floor(col / boxCols) * boxCols;
+  for (let r = boxR; r < boxR + boxRows; r++)
+    for (let c = boxC; c < boxC + boxCols; c++)
+      used.add(grid[r][c]);
+
+  // Diagonale principale
+  if (row === col)
+    for (let i = 0; i < size; i++) used.add(grid[i][i]);
+
+  // Diagonale secondaria
+  if (row + col === size - 1)
+    for (let i = 0; i < size; i++) used.add(grid[i][size - 1 - i]);
 
   return Array.from({ length: size }, (_, i) => i + 1).filter(n => !used.has(n));
 }
