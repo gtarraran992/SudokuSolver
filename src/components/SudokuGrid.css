@@ -11,15 +11,12 @@
 }
 
 .cell {
-  width: 44px;
-  height: 44px;
   border: 0.5px solid #B4B2A9;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #ffffff;
   cursor: pointer;
-  font-size: 18px;
   transition: background 0.1s;
 }
 

@@ -12,6 +12,10 @@
   cursor: pointer; transition: background 0.1s;
 }
 
+.num-btn {
+  font-size: clamp(12px, 2.5vw, 18px);
+}
+
 .num-btn:hover, .erase-btn:hover { background: #f5f4f0; }
 
 .erase-btn { color: #5F5E5A; font-size: 16px; }

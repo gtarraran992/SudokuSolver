@@ -1,4 +1,4 @@
-export type CellValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type CellValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
 export type Grid = CellValue[][];
 export type CellType = 'given' | 'user' | 'hint' | 'solution' | 'empty';
 export type GridSize = 4 | 6 | 9 | 12 | 16;

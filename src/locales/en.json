@@ -12,7 +12,14 @@
   "diff9": "Classic",
   "desc4": "4x4 grid, numbers from 1 to 4",
   "desc6": "6x6 grid, numbers from 1 to 6",
-  "desc9": "9x9 grid, numbers from 1 to 9"
+  "desc9": "9x9 grid, numbers from 1 to 9",
+  "size12": "12x12",
+"size16": "16x16",
+"diff12": "Expert",
+"diff16": "Extreme",
+"desc12": "12x12 grid, numbers from 1 to 12",
+"desc16": "16x16 grid, numbers from 1 to 16"
+  
 },
 
   "given": {

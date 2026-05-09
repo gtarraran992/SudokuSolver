@@ -12,11 +12,13 @@ interface Props {
 export default function HomeScreen({ onSelectSize, onSettings }: Props) {
   const { t } = useTranslation();
 
-  const variants: { size: GridSize; icon: string; diffKey: string; descKey: string; color: string; bg: string }[] = [
-    { size: 4,  icon: '🟢', diffKey: 'home.diff4', descKey: 'home.desc4', color: '#1D9E75', bg: '#E1F5EE' },
-    { size: 6,  icon: '🟡', diffKey: 'home.diff6', descKey: 'home.desc6', color: '#BA7517', bg: '#FAEEDA' },
-    { size: 9,  icon: '🔴', diffKey: 'home.diff9', descKey: 'home.desc9', color: '#D85A30', bg: '#FAECE7' },
-  ];
+const variants: { size: GridSize; icon: string; diffKey: string; descKey: string; color: string; bg: string }[] = [
+  { size: 4,  icon: '🟢', diffKey: 'home.diff4',  descKey: 'home.desc4',  color: '#1D9E75', bg: '#E1F5EE' },
+  { size: 6,  icon: '🟡', diffKey: 'home.diff6',  descKey: 'home.desc6',  color: '#BA7517', bg: '#FAEEDA' },
+  { size: 9,  icon: '🔴', diffKey: 'home.diff9',  descKey: 'home.desc9',  color: '#D85A30', bg: '#FAECE7' },
+  { size: 12, icon: '🟣', diffKey: 'home.diff12', descKey: 'home.desc12', color: '#7B3FA0', bg: '#F3E8FA' },
+  { size: 16, icon: '⚫', diffKey: 'home.diff16', descKey: 'home.desc16', color: '#2C2C2C', bg: '#E8E8E8' },
+];
 
   return (
     <div className="screen home-screen">

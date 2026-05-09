@@ -12,7 +12,13 @@
   "diff9": "Classico",
   "desc4": "Griglia 4x4, numeri da 1 a 4",
   "desc6": "Griglia 6x6, numeri da 1 a 6",
-  "desc9": "Griglia 9x9, numeri da 1 a 9"
+  "desc9": "Griglia 9x9, numeri da 1 a 9",
+  "size12": "12x12",
+"size16": "16x16",
+"diff12": "Esperto",
+"diff16": "Estremo",
+"desc12": "Griglia 12x12, numeri da 1 a 12",
+"desc16": "Griglia 16x16, numeri da 1 a 16"
 },
 
   "given": {

@@ -21,8 +21,10 @@ export default function SudokuGrid({
 
   const { boxRows, boxCols } = getBoxDimensions(gridSize);
 
-  // Dimensione cella in base alla griglia
-  const cellSize = gridSize === 4 ? 72 : gridSize === 6 ? 56 : 44;
+  // Calcola cellSize in base alla viewport
+  const maxGridWidth = Math.min(window.innerWidth - 32, 480); // 32px di padding laterale
+  const cellSize = Math.floor(maxGridWidth / gridSize);
+  const fontSize = cellSize < 30 ? cellSize * 0.45 : cellSize * 0.5;
 
   function getCellClass(r: number, c: number): string {
     const cell = board[r][c];
@@ -69,7 +71,11 @@ export default function SudokuGrid({
             <div
               key={c}
               className={getCellClass(r, c)}
-              style={{ width: cellSize, height: cellSize, fontSize: gridSize === 4 ? 24 : gridSize === 6 ? 20 : 18 }}
+              style={{ 
+               width: cellSize, 
+               height: cellSize, 
+               fontSize: fontSize
+              }}
               onClick={() => onCellPress(r, c)}
             >
               {cell.value !== 0 && (
