@@ -1,0 +1,92 @@
+.home-screen {
+  justify-content: flex-start;
+}
+
+.home-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.home-titles h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2C2C2A;
+  margin: 0 0 4px;
+}
+
+.home-titles p {
+  font-size: 14px;
+  color: #888780;
+  margin: 0;
+}
+
+.home-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.variant-card {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #FFFFFF;
+  border: 1.5px solid #D3D1C7;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  width: 100%;
+  text-align: left;
+  padding: 0;
+}
+
+.variant-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.variant-card-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px 16px;
+  min-width: 80px;
+}
+
+.variant-icon {
+  font-size: 24px;
+}
+
+.variant-size {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.variant-card-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+}
+
+.variant-diff {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.variant-desc {
+  font-size: 13px;
+  color: #888780;
+}
+
+.variant-arrow {
+  font-size: 22px;
+  padding-right: 16px;
+  color: #B4B2A9;
+}

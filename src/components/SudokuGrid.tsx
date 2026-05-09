@@ -1,4 +1,5 @@
-import { BoardState } from '../logic/types';
+import { BoardState, GridSize } from '../logic/types';
+import { getBoxDimensions } from '../logic/validator';
 import './SudokuGrid.css';
 
 interface Props {
@@ -10,12 +11,18 @@ interface Props {
   highlightBoxCol?: number;
   hintCell?: { row: number; col: number };
   onCellPress: (row: number, col: number) => void;
+  gridSize: GridSize;
 }
 
 export default function SudokuGrid({
   board, selectedCell, highlightRows = [], highlightCols = [],
-  highlightBoxRow, highlightBoxCol, hintCell, onCellPress,
+  highlightBoxRow, highlightBoxCol, hintCell, onCellPress, gridSize,
 }: Props) {
+
+  const { boxRows, boxCols } = getBoxDimensions(gridSize);
+
+  // Dimensione cella in base alla griglia
+  const cellSize = gridSize === 4 ? 72 : gridSize === 6 ? 56 : 44;
 
   function getCellClass(r: number, c: number): string {
     const cell = board[r][c];
@@ -24,14 +31,15 @@ export default function SudokuGrid({
     const isHighlighted =
       highlightRows.includes(r) || highlightCols.includes(c) ||
       (highlightBoxRow !== undefined && highlightBoxCol !== undefined &&
-        Math.floor(r / 3) === highlightBoxRow && Math.floor(c / 3) === highlightBoxCol);
+        Math.floor(r / boxRows) === highlightBoxRow && Math.floor(c / boxCols) === highlightBoxCol);
     const isSameGroup = selectedCell && (
       selectedCell.row === r || selectedCell.col === c ||
-      (Math.floor(selectedCell.row / 3) === Math.floor(r / 3) && Math.floor(selectedCell.col / 3) === Math.floor(c / 3))
+      (Math.floor(selectedCell.row / boxRows) === Math.floor(r / boxRows) &&
+        Math.floor(selectedCell.col / boxCols) === Math.floor(c / boxCols))
     );
 
-    const borderRight = (c === 2 || c === 5) ? 'border-box-right' : '';
-    const borderBottom = (r === 2 || r === 5) ? 'border-box-bottom' : '';
+    const borderRight = ((c + 1) % boxCols === 0 && c !== gridSize - 1) ? 'border-box-right' : '';
+    const borderBottom = ((r + 1) % boxRows === 0 && r !== gridSize - 1) ? 'border-box-bottom' : '';
 
     let state = '';
     if (cell.isError) state = 'cell-error';
@@ -58,7 +66,12 @@ export default function SudokuGrid({
       {board.map((row, r) => (
         <div key={r} className="grid-row">
           {row.map((cell, c) => (
-            <div key={c} className={getCellClass(r, c)} onClick={() => onCellPress(r, c)}>
+            <div
+              key={c}
+              className={getCellClass(r, c)}
+              style={{ width: cellSize, height: cellSize, fontSize: gridSize === 4 ? 24 : gridSize === 6 ? 20 : 18 }}
+              onClick={() => onCellPress(r, c)}
+            >
               {cell.value !== 0 && (
                 <span className={getTextClass(r, c)}>{cell.value}</span>
               )}

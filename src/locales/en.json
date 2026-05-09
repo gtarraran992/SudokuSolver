@@ -1,6 +1,20 @@
 {
   "appName": "Sudoku Hint",
 
+"home": {
+  "title": "Sudoku Hint",
+  "subtitle": "Choose a variant",
+  "size4": "4x4",
+  "size6": "6x6",
+  "size9": "9x9",
+  "diff4": "Beginner",
+  "diff6": "Intermediate",
+  "diff9": "Classic",
+  "desc4": "4x4 grid, numbers from 1 to 4",
+  "desc6": "6x6 grid, numbers from 1 to 6",
+  "desc9": "9x9 grid, numbers from 1 to 9"
+},
+
   "given": {
     "step": "Step 1 of 2",
     "cardTitle": "Grid numbers",

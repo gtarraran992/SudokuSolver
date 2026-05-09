@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import SudokuGrid from '../components/SudokuGrid';
 import Numpad from '../components/Numpad';
-import { BoardState, CellState, CellValue, Grid } from '../logic/types';
+import { BoardState, CellState, CellValue, Grid, GridSize } from '../logic/types';
 import { validateGrid } from '../logic/validator';
 import { solve } from '../logic/solver';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import './Screen.css';
 import './SettingsScreen.css';
 
 interface Props {
+  gridSize: GridSize;
   givenBoard: BoardState;
   initialBoard?: BoardState;
   onCalculate: (board: BoardState, solution: Grid) => void;
@@ -16,7 +17,7 @@ interface Props {
   onSettings: () => void;
 }
 
-export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBack, onSettings }: Props) {
+export default function UserScreen({ gridSize, givenBoard, initialBoard, onCalculate, onBack, onSettings }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(
     initialBoard ?? givenBoard.map(row => row.map(cell => ({ ...cell })))
@@ -54,7 +55,7 @@ export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBa
 
   const handleCalculate = useCallback(() => {
     const grid = board.map(r => r.map(c => c.value)) as Grid;
-    const validation = validateGrid(grid);
+    const validation = validateGrid(grid, gridSize);
     if (!validation.valid) {
       setBoard(prev => {
         const next = prev.map(r => r.map(c => ({ ...c, isError: false })));
@@ -64,20 +65,21 @@ export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBa
       setErrorMsg(t('user.errorConflict'));
       return;
     }
-    const solution = solve(grid);
+    const solution = solve(grid, gridSize);
     if (!solution) {
       setErrorMsg(t('user.errorNoSolution'));
       return;
     }
     onCalculate(board, solution);
-  }, [board, onCalculate, t]);
+  }, [board, gridSize, onCalculate, t]);
 
   const userCount = board.flat().filter((c: CellState) => c.type === 'user').length;
 
   return (
     <div className="screen">
       <div className="screen-header">
-        <h1>{t('appName')}</h1>
+        <button className="btn-back" onClick={onBack}>← {t('settings.back')}</button>
+        <h1>{gridSize}x{gridSize}</h1>
       </div>
 
       <div className="step-row">
@@ -92,10 +94,10 @@ export default function UserScreen({ givenBoard, initialBoard, onCalculate, onBa
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
 
       <div className="grid-wrapper">
-        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} />
+        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} gridSize={gridSize} />
       </div>
 
-      <Numpad onNumber={handleNumber} onErase={handleErase} color="#185FA5" />
+      <Numpad onNumber={handleNumber} onErase={handleErase} color="#185FA5" gridSize={gridSize} />
 
       <p className="counter">
         {userCount === 0 ? t('user.counterZero') : t('user.counter', { count: userCount })}

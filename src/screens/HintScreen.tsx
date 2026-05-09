@@ -2,22 +2,21 @@ import { useState, useCallback, useEffect } from 'react';
 import SudokuGrid from '../components/SudokuGrid';
 import HintPanel from '../components/HintPanel';
 import Numpad from '../components/Numpad';
-import { BoardState, CellState, CellValue, Grid, Hint, HintLevel } from '../logic/types';
+import { BoardState, CellState, CellValue, Grid, GridSize, Hint, HintLevel } from '../logic/types';
 import { getHint } from '../logic/hintEngine';
 import { useTranslation } from 'react-i18next';
 import './Screen.css';
-import './SettingsScreen.css';
 
 interface Props {
+  gridSize: GridSize;
   initialBoard: BoardState;
   solution: Grid;
   onBack: () => void;
   onReset: () => void;
   onBoardChange: (board: BoardState) => void;
-  onSettings: () => void;
 }
 
-export default function HintScreen({ initialBoard, solution, onBack, onReset, onBoardChange, onSettings }: Props) {
+export default function HintScreen({ gridSize, initialBoard, solution, onBack, onReset, onBoardChange }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(
     initialBoard.map(r => r.map(c => ({ ...c, isError: false })))
@@ -69,11 +68,11 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
   }, [selectedCell, board]);
 
   const handleRequestHint = useCallback(() => {
-    const hint = getHint(currentGrid(), solution, hintLevel);
+    const hint = getHint(currentGrid(), solution, hintLevel, gridSize);
     setCurrentHint(hint);
     setHintCount(c => c + 1);
     if (hint) setSelectedCell({ row: hint.targetRow, col: hint.targetCol });
-  }, [board, solution, hintLevel]);
+  }, [board, solution, hintLevel, gridSize]);
 
   const handleShowSolution = useCallback(() => {
     if (!confirm(t('hint.showSolutionConfirm'))) return;
@@ -98,15 +97,16 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
     }
   }, [boardBeforeSolution, onBoardChange]);
 
+  const totalCells = gridSize * gridSize;
   const isSolved = board.flat().every((cell: CellState, i: number) => cell.value === solution.flat()[i]);
   const filledCount = board.flat().filter((c: CellState) => c.value !== 0).length;
-  const progress = Math.round((filledCount / 81) * 100);
+  const progress = Math.round((filledCount / totalCells) * 100);
 
   return (
     <div className="screen">
       <div className="hint-screen-header">
         <button className="btn-back" onClick={onBack}>{t('hint.back')}</button>
-        <h2>{t('hint.title')}</h2>
+        <h2>{t('hint.title')} {gridSize}x{gridSize}</h2>
         <span className="progress-pill">{progress}%</span>
       </div>
 
@@ -128,10 +128,11 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
           highlightBoxCol={currentHint?.highlightBoxCol}
           hintCell={currentHint ? { row: currentHint.targetRow, col: currentHint.targetCol } : undefined}
           onCellPress={handleCellPress}
+          gridSize={gridSize}
         />
       </div>
 
-      <Numpad onNumber={handleNumber} onErase={handleErase} />
+      <Numpad onNumber={handleNumber} onErase={handleErase} gridSize={gridSize} />
 
       <HintPanel
         hint={currentHint}
@@ -152,10 +153,6 @@ export default function HintScreen({ initialBoard, solution, onBack, onReset, on
       )}
 
       <button className="btn-ghost" onClick={onReset}>{t('hint.newGame')}</button>
-
-      <div className="settings-fab">
-        <button className="btn-settings" onClick={onSettings}>⚙️</button>
-      </div>
     </div>
   );
 }

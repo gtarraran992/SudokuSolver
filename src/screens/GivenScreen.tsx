@@ -1,27 +1,36 @@
 import { useState, useCallback } from 'react';
 import SudokuGrid from '../components/SudokuGrid';
 import Numpad from '../components/Numpad';
-import { BoardState, CellState, CellValue, Grid } from '../logic/types';
+import { BoardState, CellState, CellValue, Grid, GridSize } from '../logic/types';
 import { validateGrid } from '../logic/validator';
 import { useTranslation } from 'react-i18next';
 import './Screen.css';
 import './SettingsScreen.css';
 
 interface Props {
+  gridSize: GridSize;
   onConfirm: (board: BoardState) => void;
   initialBoard?: BoardState;
+  onBack: () => void;
   onSettings: () => void;
 }
 
-function emptyBoard(): BoardState {
-  return Array.from({ length: 9 }, () =>
-    Array.from({ length: 9 }, (): CellState => ({ value: 0, type: 'empty', isError: false }))
+function emptyBoard(size: GridSize): BoardState {
+  return Array.from({ length: size }, () =>
+    Array.from({ length: size }, (): CellState => ({ value: 0, type: 'empty', isError: false }))
   );
 }
 
-export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Props) {
+// Minimo celle per abilitare conferma (circa 1/4 della griglia)
+function minCells(size: GridSize): number {
+  if (size === 4) return 4;
+  if (size === 6) return 8;
+  return 17;
+}
+
+export default function GivenScreen({ gridSize, onConfirm, initialBoard, onBack }: Props) {
   const { t } = useTranslation();
-  const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard());
+  const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard(gridSize));
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -52,7 +61,7 @@ export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Pro
 
   const handleConfirm = useCallback(() => {
     const grid = board.map(r => r.map(c => c.value)) as Grid;
-    const validation = validateGrid(grid);
+    const validation = validateGrid(grid, gridSize);
     if (!validation.valid) {
       setBoard(prev => {
         const next = prev.map(r => r.map(c => ({ ...c, isError: false })));
@@ -63,23 +72,25 @@ export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Pro
       return;
     }
     onConfirm(board);
-  }, [board, onConfirm, t]);
+  }, [board, onConfirm, gridSize, t]);
 
   const handleReset = useCallback(() => {
     if (confirm(t('given.restartConfirm'))) {
-      setBoard(emptyBoard());
+      setBoard(emptyBoard(gridSize));
       setSelectedCell(null);
       setErrorMsg('');
     }
-  }, [t]);
+  }, [gridSize, t]);
 
   const filledCount = board.flat().filter(c => c.value !== 0).length;
-  const canConfirm = filledCount >= 17;
+  const min = minCells(gridSize);
+  const canConfirm = filledCount >= min;
 
   return (
     <div className="screen">
       <div className="screen-header">
-        <h1>{t('appName')}</h1>
+        <button className="btn-back" onClick={onBack}>← {t('settings.back')}</button>
+        <h1>{gridSize}x{gridSize}</h1>
       </div>
 
       <div className="step-row">
@@ -95,13 +106,13 @@ export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Pro
       {errorMsg && <div className="error-msg">⚠️ {errorMsg}</div>}
 
       <div className="grid-wrapper">
-        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} />
+        <SudokuGrid board={board} selectedCell={selectedCell} onCellPress={handleCellPress} gridSize={gridSize} />
       </div>
 
-      <Numpad onNumber={handleNumber} onErase={handleErase} color="#2C2C2A" />
+      <Numpad onNumber={handleNumber} onErase={handleErase} color="#2C2C2A" gridSize={gridSize} />
 
       <p className="counter">
-        {t('given.counter', { count: filledCount })} {filledCount >= 17 ? t('given.counterOk') : t('given.counterMin')}
+        {t('given.counter', { count: filledCount })} {canConfirm ? t('given.counterOk') : `(minimo ${min})`}
       </p>
 
       <button className="btn-primary" onClick={handleConfirm} disabled={!canConfirm}>
@@ -110,9 +121,6 @@ export default function GivenScreen({ onConfirm, initialBoard, onSettings }: Pro
 
       <button className="btn-ghost" onClick={handleReset}>{t('given.restart')}</button>
 
-      <div className="settings-fab">
-        <button className="btn-settings" onClick={onSettings}>⚙️</button>
-      </div>
     </div>
   );
 }

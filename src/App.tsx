@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
+import HomeScreen from './screens/HomeScreen';
 import GivenScreen from './screens/GivenScreen';
 import UserScreen from './screens/UserScreen';
 import HintScreen from './screens/HintScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import LegalScreen from './screens/LegalScreen';
-import { BoardState, Grid } from './logic/types';
+import { BoardState, Grid, GridSize } from './logic/types';
 import './App.css';
 
-type Screen = 'given' | 'user' | 'hint' | 'settings' | 'privacy' | 'terms';
+type Screen = 'home' | 'given' | 'user' | 'hint' | 'settings' | 'privacy' | 'terms';
 
 const STORAGE_KEY = 'sudokuhint_state';
 
 interface SavedState {
   screen: Screen;
+  gridSize: GridSize;
   givenBoard: BoardState | null;
   userBoard: BoardState | null;
   solution: Grid | null;
@@ -23,31 +25,31 @@ function loadState(): SavedState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      // Non ripristinare settings/privacy/terms al refresh
       if (['settings', 'privacy', 'terms'].includes(parsed.screen)) {
-        parsed.screen = 'given';
+        parsed.screen = 'home';
       }
       return parsed;
     }
   } catch {}
-  return { screen: 'given', givenBoard: null, userBoard: null, solution: null };
+  return { screen: 'home', gridSize: 9, givenBoard: null, userBoard: null, solution: null };
 }
 
 export default function App() {
   const saved = loadState();
   const [screen, setScreen] = useState<Screen>(saved.screen);
-  const [prevScreen, setPrevScreen] = useState<Screen>('given');
+  const [prevScreen, setPrevScreen] = useState<Screen>('home');
+  const [gridSize, setGridSize] = useState<GridSize>(saved.gridSize ?? 9);
   const [givenBoard, setGivenBoard] = useState<BoardState | null>(saved.givenBoard);
   const [userBoard, setUserBoard] = useState<BoardState | null>(saved.userBoard);
   const [solution, setSolution] = useState<Grid | null>(saved.solution);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, givenBoard, userBoard, solution }));
-  }, [screen, givenBoard, userBoard, solution]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, gridSize, givenBoard, userBoard, solution }));
+  }, [screen, gridSize, givenBoard, userBoard, solution]);
 
   const handleReset = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setScreen('given');
+    setScreen('home');
     setGivenBoard(null);
     setUserBoard(null);
     setSolution(null);
@@ -58,10 +60,25 @@ export default function App() {
     setScreen('settings');
   };
 
+  const handleSelectSize = (size: GridSize) => {
+    setGridSize(size);
+    setGivenBoard(null);
+    setUserBoard(null);
+    setSolution(null);
+    setScreen('given');
+  };
+
   return (
     <div className="app">
+      {screen === 'home' && (
+        <HomeScreen
+          onSelectSize={handleSelectSize}
+          onSettings={() => openSettings('home')}
+        />
+      )}
       {screen === 'given' && (
         <GivenScreen
+          gridSize={gridSize}
           initialBoard={givenBoard ?? undefined}
           onConfirm={(board) => {
             const givenChanged = JSON.stringify(board) !== JSON.stringify(givenBoard);
@@ -72,11 +89,13 @@ export default function App() {
             }
             setScreen('user');
           }}
+          onBack={() => setScreen('home')}
           onSettings={() => openSettings('given')}
         />
       )}
       {screen === 'user' && givenBoard && (
         <UserScreen
+          gridSize={gridSize}
           givenBoard={givenBoard}
           initialBoard={userBoard ?? undefined}
           onCalculate={(board, sol) => {
@@ -90,12 +109,12 @@ export default function App() {
       )}
       {screen === 'hint' && userBoard && solution && (
         <HintScreen
+          gridSize={gridSize}
           initialBoard={userBoard}
           solution={solution}
           onBack={() => setScreen('user')}
           onReset={handleReset}
           onBoardChange={(board) => setUserBoard(board)}
-          onSettings={() => openSettings('hint')}
         />
       )}
       {screen === 'settings' && (
