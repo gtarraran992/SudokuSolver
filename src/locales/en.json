@@ -66,7 +66,25 @@
     "level3": "Answer",
     "askHint": "💡 Ask for a hint",
     "hintsUsed": "Hints used: {{count}}",
-    "hintPlaceholder": "Press \"Ask for a hint\" to get help"
+    "hintPlaceholder": "Press \"Ask for a hint\" to get help",
+    "levelBadge": "Level {{level}}",
+"technique": {
+  "naked_single": "Naked Single",
+  "hidden_single": "Hidden Single",
+  "fallback": "Advanced Analysis"
+},
+"desc": {
+  "l1_row": "Focus on row {{row}}.",
+  "l1_col": "Focus on column {{col}}.",
+  "l1_box": "Focus on the highlighted box.",
+  "l1_cell": "Look at the cell in row {{row}}, column {{col}}.",
+  "l2_naked": "Technique: Naked Single. The cell in row {{row}}, column {{col}} has only one possible number.",
+  "l2_hidden_row": "Technique: Hidden Single in row. In row {{row}}, a number can only go in one cell.",
+  "l2_hidden_col": "Technique: Hidden Single in column. In column {{col}}, a number can only go in one cell.",
+  "l2_hidden_box": "Technique: Hidden Single in box. In this box, a number can only occupy one cell.",
+  "l2_fallback": "The cell in row {{row}}, column {{col}} is the most constrained. Analyze the candidates.",
+  "l3_answer": "In the cell at row {{row}}, column {{col}} insert the number {{answer}}."
+}
   },
 
 "settings": {

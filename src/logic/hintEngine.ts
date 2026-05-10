@@ -50,7 +50,6 @@ function findHiddenSingle(
 ): TechniqueResult | null {
   const { boxRows, boxCols } = getBoxDimensions(size);
 
-  // Righe
   for (let r = 0; r < size; r++)
     for (let num = 1; num <= size; num++) {
       if (grid[r].includes(num as CellValue)) continue;
@@ -61,7 +60,6 @@ function findHiddenSingle(
         return { technique: 'hidden_single', row: r, col: pos[0], answer: num as CellValue, context: { highlightRows: [r] } };
     }
 
-  // Colonne
   for (let c = 0; c < size; c++)
     for (let num = 1; num <= size; num++) {
       const colVals = Array.from({ length: size }, (_, r) => grid[r][c]);
@@ -73,7 +71,6 @@ function findHiddenSingle(
         return { technique: 'hidden_single', row: pos[0], col: c, answer: num as CellValue, context: { highlightCols: [c] } };
     }
 
-  // Box
   const numBoxRows = size / boxRows;
   const numBoxCols = size / boxCols;
   for (let boxR = 0; boxR < numBoxRows; boxR++)
@@ -109,33 +106,45 @@ function findAnyEmpty(
       if (n < min) { min = n; bestRow = r; bestCol = c; }
     }
   if (bestRow === -1) return null;
-  return { technique: 'fallback', row: bestRow, col: bestCol, answer: solution[bestRow][bestCol], context: { highlightRows: [bestRow], highlightCols: [bestCol] } };
+  return {
+    technique: 'fallback', row: bestRow, col: bestCol,
+    answer: solution[bestRow][bestCol],
+    context: { highlightRows: [bestRow], highlightCols: [bestCol] }
+  };
 }
 
 function buildHint(result: TechniqueResult, level: 1 | 2 | 3): Hint {
   const { technique, row, col, answer, context } = result;
-  const techniqueName = {
-    naked_single: 'Singolo candidato',
-    hidden_single: 'Singolo nascosto',
-    fallback: 'Analisi avanzata',
-  }[technique];
 
-  let description = '';
+  const techniqueKey = `hint.technique.${technique}`;
+
+  let descriptionKey = '';
+  let descriptionParams: Record<string, number | string> = { row: row + 1, col: col + 1, answer };
+
   if (level === 1) {
-    if (context.highlightRows && !context.highlightCols) description = `Concentrati sulla riga ${row + 1}.`;
-    else if (context.highlightCols && !context.highlightRows) description = `Concentrati sulla colonna ${col + 1}.`;
-    else if (context.highlightBoxRow !== undefined) description = `Concentrati sul box evidenziato.`;
-    else description = `Guarda la cella in riga ${row + 1}, colonna ${col + 1}.`;
+    if (context.highlightRows && !context.highlightCols) descriptionKey = 'hint.desc.l1_row';
+    else if (context.highlightCols && !context.highlightRows) descriptionKey = 'hint.desc.l1_col';
+    else if (context.highlightBoxRow !== undefined) descriptionKey = 'hint.desc.l1_box';
+    else descriptionKey = 'hint.desc.l1_cell';
   } else if (level === 2) {
-    if (technique === 'naked_single') description = `Tecnica: Singolo candidato. La cella in riga ${row + 1}, colonna ${col + 1} ha un unico numero possibile.`;
+    if (technique === 'naked_single') descriptionKey = 'hint.desc.l2_naked';
     else if (technique === 'hidden_single') {
-      if (context.highlightRows) description = `Tecnica: Singolo nascosto in riga. Nella riga ${row + 1} un numero può stare solo in una cella.`;
-      else if (context.highlightCols) description = `Tecnica: Singolo nascosto in colonna. Nella colonna ${col + 1} un numero può stare solo in una cella.`;
-      else description = `Tecnica: Singolo nascosto nel box. In questo box un numero può occupare solo una cella.`;
-    } else description = `La cella in riga ${row + 1}, colonna ${col + 1} è la più vincolata. Analizza i candidati.`;
+      if (context.highlightRows) descriptionKey = 'hint.desc.l2_hidden_row';
+      else if (context.highlightCols) descriptionKey = 'hint.desc.l2_hidden_col';
+      else descriptionKey = 'hint.desc.l2_hidden_box';
+    } else descriptionKey = 'hint.desc.l2_fallback';
   } else {
-    description = `Nella cella in riga ${row + 1}, colonna ${col + 1} inserisci il numero ${answer}.`;
+    descriptionKey = 'hint.desc.l3_answer';
   }
 
-  return { level, techniqueName, description, targetRow: row, targetCol: col, answer: level === 3 ? answer : undefined, ...context };
+  return {
+    level,
+    techniqueKey,
+    descriptionKey,
+    descriptionParams,
+    targetRow: row,
+    targetCol: col,
+    answer: level === 3 ? answer : undefined,
+    ...context
+  };
 }

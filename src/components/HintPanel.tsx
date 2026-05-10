@@ -40,10 +40,14 @@ export default function HintPanel({ hint, currentLevel, onLevelChange, onRequest
       {hint ? (
         <div className="hint-box" style={{ background: levelBg[hint.level] }}>
           <div className="hint-header">
-            <span className="technique-name" style={{ color: levelColors[hint.level] }}>{hint.techniqueName}</span>
-            <span className="level-badge" style={{ color: levelColors[hint.level] }}>Livello {hint.level}</span>
+            <span className="technique-name" style={{ color: levelColors[hint.level] }}>
+              {t(hint.techniqueKey)}
+            </span>
+            <span className="level-badge" style={{ color: levelColors[hint.level] }}>
+              {t('hint.levelBadge', { level: hint.level })}
+            </span>
           </div>
-          <p className="hint-text">{hint.description}</p>
+          <p className="hint-text">{t(hint.descriptionKey, hint.descriptionParams)}</p>
         </div>
       ) : (
         <div className="hint-empty">

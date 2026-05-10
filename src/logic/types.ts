@@ -14,8 +14,9 @@ export type HintLevel = 1 | 2 | 3;
 
 export interface Hint {
   level: HintLevel;
-  techniqueName: string;
-  description: string;
+  techniqueKey: string;
+  descriptionKey: string;
+  descriptionParams: Record<string, number | string>;
   targetRow: number;
   targetCol: number;
   highlightRows?: number[];

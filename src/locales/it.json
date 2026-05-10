@@ -65,7 +65,25 @@
     "level3": "Risposta",
     "askHint": "💡 Chiedi indizio",
     "hintsUsed": "Indizi usati: {{count}}",
-    "hintPlaceholder": "Premi \"Chiedi indizio\" per ricevere aiuto"
+    "hintPlaceholder": "Premi \"Chiedi indizio\" per ricevere aiuto",
+    "levelBadge": "Livello {{level}}",
+"technique": {
+  "naked_single": "Singolo candidato",
+  "hidden_single": "Singolo nascosto",
+  "fallback": "Analisi avanzata"
+},
+"desc": {
+  "l1_row": "Concentrati sulla riga {{row}}.",
+  "l1_col": "Concentrati sulla colonna {{col}}.",
+  "l1_box": "Concentrati sul box evidenziato.",
+  "l1_cell": "Guarda la cella in riga {{row}}, colonna {{col}}.",
+  "l2_naked": "Tecnica: Singolo candidato. La cella in riga {{row}}, colonna {{col}} ha un unico numero possibile.",
+  "l2_hidden_row": "Tecnica: Singolo nascosto in riga. Nella riga {{row}} un numero può stare solo in una cella.",
+  "l2_hidden_col": "Tecnica: Singolo nascosto in colonna. Nella colonna {{col}} un numero può stare solo in una cella.",
+  "l2_hidden_box": "Tecnica: Singolo nascosto nel box. In questo box un numero può occupare solo una cella.",
+  "l2_fallback": "La cella in riga {{row}}, colonna {{col}} è la più vincolata. Analizza i candidati.",
+  "l3_answer": "Nella cella in riga {{row}}, colonna {{col}} inserisci il numero {{answer}}."
+}
   },
 
 "settings": {
