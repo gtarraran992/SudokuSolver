@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Hint — Privacy Policy</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f5f0;
+      --surface: #ffffff;
+      --ink: #1a1a2e;
+      --muted: #6b6b7b;
+      --accent: #2d6a4f;
+      --accent-light: #e8f4ee;
+      --border: #e2ddd6;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 1rem 4rem;
+    }
+
+    header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .header-text span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .lang-toggle {
+      margin-left: auto;
+      display: flex;
+      gap: 0.25rem;
+      background: var(--accent-light);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .lang-toggle button {
+      border: none;
+      background: transparent;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 2.5rem auto 0;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+
+    .date {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      padding: 0.5rem 0.9rem;
+      background: var(--accent-light);
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    section p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #3a3a4a;
+    }
+
+    section p a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    footer {
+      max-width: 720px;
+      margin: 2rem auto 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    [lang-content] { display: none; }
+    [lang-content].visible { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🔢</div>
+  <div class="header-text">
+    <h1>Sudoku Hint</h1>
+    <span>Privacy Policy</span>
+  </div>
+  <div class="lang-toggle">
+    <button id="btn-it" class="active" onclick="setLang('it')">IT</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ITALIANO -->
+  <div lang-content="it" class="visible">
+    <p class="date">Ultimo aggiornamento: Maggio 2026</p>
+
+    <section>
+      <h2>1. Introduzione</h2>
+      <p>Sudoku Hint ("noi", "nostra", "app") rispetta la tua privacy. Questa Privacy Policy descrive come raccogliamo, utilizziamo e proteggiamo le tue informazioni.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>2. Dati raccolti</h2>
+      <p>L'app non raccoglie dati personali. Tutti i dati di gioco (griglia, numeri inseriti, progressi) sono salvati esclusivamente sul tuo dispositivo tramite localStorage e non vengono mai trasmessi a server esterni.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>3. Utilizzo dei dati</h2>
+      <p>I dati salvati localmente vengono utilizzati esclusivamente per ripristinare la partita in corso al riavvio dell'app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>4. Condivisione dei dati</h2>
+      <p>Non vendiamo né condividiamo alcun dato con terze parti. Nessun dato viene trasmesso a server esterni.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>5. Conservazione dei dati</h2>
+      <p>I dati di gioco vengono conservati localmente sul dispositivo finché non avvii una nuova partita o disinstalli l'app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>6. Diritti dell'utente</h2>
+      <p>Puoi eliminare tutti i dati salvati in qualsiasi momento premendo "Nuova partita" nell'app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>7. Contatti</h2>
+      <p>Per domande sulla privacy: <a href="mailto:gtarraran992@gmail.com">gtarraran992@gmail.com</a></p>
+    </section>
+  </div>
+
+  <!-- ENGLISH -->
+  <div lang-content="en">
+    <p class="date">Last updated: May 2026</p>
+
+    <section>
+      <h2>1. Introduction</h2>
+      <p>Sudoku Hint ("we", "our", "app") respects your privacy. This Privacy Policy describes how we collect, use and protect your information.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>2. Data collected</h2>
+      <p>The app does not collect personal data. All game data (grid, entered numbers, progress) is saved exclusively on your device via localStorage and is never transmitted to external servers.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>3. Use of data</h2>
+      <p>Locally saved data is used exclusively to restore the current game when the app is restarted.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>4. Data sharing</h2>
+      <p>We do not sell or share any data with third parties. No data is transmitted to external servers.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>5. Data retention</h2>
+      <p>Game data is stored locally on the device until you start a new game or uninstall the app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>6. User rights</h2>
+      <p>You can delete all saved data at any time by pressing "New game" in the app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>7. Contact</h2>
+      <p>For privacy questions: <a href="mailto:gtarraran992@gmail.com">gtarraran992@gmail.com</a></p>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Giacomo Tarraran · <a href="terms.html">Terms of Service</a></p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[lang-content]').forEach(el => {
+      el.classList.toggle('visible', el.getAttribute('lang-content') === lang);
+    });
+    document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  }
+</script>
+
+</body>
+</html>

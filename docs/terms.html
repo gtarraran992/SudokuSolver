@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Hint — Termini di Servizio</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f5f0;
+      --surface: #ffffff;
+      --ink: #1a1a2e;
+      --muted: #6b6b7b;
+      --accent: #2d6a4f;
+      --accent-light: #e8f4ee;
+      --border: #e2ddd6;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 1rem 4rem;
+    }
+
+    header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .header-text span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .lang-toggle {
+      margin-left: auto;
+      display: flex;
+      gap: 0.25rem;
+      background: var(--accent-light);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .lang-toggle button {
+      border: none;
+      background: transparent;
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 2.5rem auto 0;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+
+    .date {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      padding: 0.5rem 0.9rem;
+      background: var(--accent-light);
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    section p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #3a3a4a;
+    }
+
+    section p a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    footer {
+      max-width: 720px;
+      margin: 2rem auto 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    [lang-content] { display: none; }
+    [lang-content].visible { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🔢</div>
+  <div class="header-text">
+    <h1>Sudoku Hint</h1>
+    <span id="page-subtitle">Termini di Servizio</span>
+  </div>
+  <div class="lang-toggle">
+    <button id="btn-it" class="active" onclick="setLang('it')">IT</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ITALIANO -->
+  <div lang-content="it" class="visible">
+    <p class="date">Ultimo aggiornamento: Aprile 2026</p>
+
+    <section>
+      <h2>1. Accettazione dei termini</h2>
+      <p>Utilizzando Sudoku Hint accetti i presenti Termini di Servizio. Se non li accetti, ti preghiamo di non utilizzare l'app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>2. Descrizione del servizio</h2>
+      <p>Sudoku Hint è un'app gratuita che aiuta a risolvere i sudoku fornendo indizi graduali senza rivelare direttamente la soluzione.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>3. Comportamento dell'utente</h2>
+      <p>Ti impegni a non utilizzare l'app per scopi illeciti o per danneggiare il servizio.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>4. Limitazione di responsabilità</h2>
+      <p>Sudoku Hint è fornita "così com'è". Non garantiamo la disponibilità continua del servizio e non siamo responsabili per eventuali perdite di dati.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>5. Modifiche ai termini</h2>
+      <p>Ci riserviamo il diritto di modificare questi termini. Le modifiche saranno comunicate tramite aggiornamento dell'app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>6. Contatti</h2>
+      <p>Per domande: <a href="mailto:gtarraran992@gmail.com">gtarraran992@gmail.com</a></p>
+    </section>
+  </div>
+
+  <!-- ENGLISH -->
+  <div lang-content="en">
+    <p class="date">Last updated: April 2026</p>
+
+    <section>
+      <h2>1. Acceptance of terms</h2>
+      <p>By using Sudoku Hint you accept these Terms of Service. If you do not accept them, please do not use the app.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>2. Service description</h2>
+      <p>Sudoku Hint is a free app that helps solve sudoku puzzles by providing graduated hints without directly revealing the solution.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>3. User conduct</h2>
+      <p>You agree not to use the app for unlawful purposes or to harm the service.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>4. Limitation of liability</h2>
+      <p>Sudoku Hint is provided "as is". We do not guarantee continuous availability of the service and are not responsible for any data loss.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>5. Changes to terms</h2>
+      <p>We reserve the right to modify these terms. Changes will be communicated through app updates.</p>
+    </section>
+    <div class="divider"></div>
+
+    <section>
+      <h2>6. Contact</h2>
+      <p>For questions: <a href="mailto:gtarraran992@gmail.com">gtarraran992@gmail.com</a></p>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Giacomo Tarraran · <a href="privacy-policy.html">Privacy Policy</a></p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[lang-content]').forEach(el => {
+      el.classList.toggle('visible', el.getAttribute('lang-content') === lang);
+    });
+    document.getElementById('btn-it').classList.toggle('active', lang === 'it');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('page-subtitle').textContent =
+      lang === 'it' ? 'Termini di Servizio' : 'Terms of Service';
+  }
+</script>
+
+</body>
+</html>

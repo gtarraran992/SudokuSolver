@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Keystore e credenziali — mai committare
+*.keystore
+*.jks
+keystore.properties
