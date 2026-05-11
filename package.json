@@ -1,7 +1,7 @@
 {
   "name": "sudokuhint",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,13 +12,15 @@
   "dependencies": {
     "@capacitor/android": "^8.3.2",
     "@capacitor/app": "^8.1.0",
+    "@capacitor/camera": "^8.2.0",
     "@capacitor/cli": "^8.3.2",
     "@capacitor/core": "^8.3.2",
     "@capacitor/local-notifications": "^8.1.0",
     "i18next": "^26.0.10",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-i18next": "^17.0.7"
+    "react-i18next": "^17.0.7",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

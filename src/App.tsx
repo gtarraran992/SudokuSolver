@@ -78,6 +78,7 @@ async function scheduleDailyNotification() {
           id: NOTIFICATION_ID,
           title: '🧩 Sudoku Hint',
           body: 'È ora di allenare la mente! Risolvi un sudoku oggi 💡',
+          iconColor: '#0D47D9',
           schedule: {
             at: noon,
             repeats: true,

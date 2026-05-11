@@ -66,7 +66,14 @@
     "confirm": "Confirm fixed numbers →",
     "restart": "Start over",
     "restartConfirm": "Do you want to clear all entered numbers?",
-    "errorConflicts": "Found {{count}} conflicts. Check the red cells."
+    "errorConflicts": "Found {{count}} conflicts. Check the red cells.",
+    "scan": "📷 Scan grid",
+"scanning": "⏳ Scanning...",
+"scanSuccess": "Grid acquired! Check the numbers and correct any errors.",
+"scanError": "Could not recognize the grid. Try again or enter numbers manually.",
+"scanProgress1": "📷 Opening camera...",
+"scanProgress2": "⏳ Analyzing image...",
+"scanProgress3": "🔍 Recognizing numbers..."
   },
 
   "user": {
