@@ -41,7 +41,17 @@
 "desc9d": "Griglia 9x9 con vincolo sulle diagonali",
 "modal9Title": "Variante 9x9",
 "modal9Subtitle": "Scegli la modalità di gioco",
-"modalClose": "Annulla"
+"modalClose": "Annulla",
+"continueTitle": "Partita in corso",
+"continueSubtitle": "Hai già una partita in corso per questa variante.",
+"continueContinue": "Continua partita",
+"continueContinueDesc": "Riprendi da dove eri rimasto",
+"continueNew": "Nuova partita",
+"continueNewDesc": "Ricomincia da zero",
+"abandonTitle": "Partita in corso",
+"abandonSubtitle": "Hai una partita in corso. Cambiando variante perderai i progressi.",
+"abandonConfirm": "Cambia variante",
+"abandonConfirmDesc": "La partita in corso andrà persa"
 },
 
   "given": {

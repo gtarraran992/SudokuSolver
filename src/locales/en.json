@@ -41,7 +41,17 @@
 "desc9d": "9x9 grid with diagonal constraint",
 "modal9Title": "9x9 Variant",
 "modal9Subtitle": "Choose a game mode",
-"modalClose": "Cancel"
+"modalClose": "Cancel",
+"continueTitle": "Game in progress",
+"continueSubtitle": "You already have a game in progress for this variant.",
+"continueContinue": "Continue game",
+"continueContinueDesc": "Pick up where you left off",
+"continueNew": "New game",
+"continueNewDesc": "Start from scratch",
+"abandonTitle": "Game in progress",
+"abandonSubtitle": "You have a game in progress. Changing variant will lose your progress.",
+"abandonConfirm": "Change variant",
+"abandonConfirmDesc": "The current game will be lost"
   
 },
 

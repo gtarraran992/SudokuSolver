@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import SplashScreen from './screens/SplashScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
 import ConsentScreen from './screens/ConsentScreen';
@@ -17,6 +19,7 @@ type AppPhase = 'splash' | 'onboarding' | 'consent' | 'app';
 const STORAGE_KEY = 'sudokuhint_state';
 const ONBOARDING_KEY = 'sudokuhint_onboarding_done';
 const CONSENT_KEY = 'sudokuhint_consent_done';
+const NOTIFICATION_ID = 1;
 
 interface SavedState {
   screen: Screen;
@@ -41,6 +44,58 @@ function loadState(): SavedState {
   return { screen: 'home', gridSize: 9, isDiagonal: false, givenBoard: null, userBoard: null, solution: null };
 }
 
+async function scheduleDailyNotification() {
+  try {
+    // Chiedi permesso
+    const { display } = await LocalNotifications.requestPermissions();
+    if (display !== 'granted') return;
+
+    // Crea il canale Android con suono personalizzato
+    await LocalNotifications.createChannel({
+      id: 'sudoku_daily',
+      name: 'Promemoria giornaliero',
+      description: 'Notifica giornaliera di Sudoku Hint',
+      importance: 4, // HIGH
+      sound: 'notifica.mp3',
+      vibration: true,
+    });
+
+    // Cancella eventuali notifiche precedenti
+    await LocalNotifications.cancel({ notifications: [{ id: NOTIFICATION_ID }] });
+
+    // Calcola il prossimo mezzogiorno
+    const now = new Date();
+    const noon = new Date();
+    noon.setHours(12, 0, 0, 0);
+    if (now >= noon) {
+      noon.setDate(noon.getDate() + 1);
+    }
+
+    // Schedula notifica ripetuta ogni giorno a mezzogiorno
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: NOTIFICATION_ID,
+          title: '🧩 Sudoku Hint',
+          body: 'È ora di allenare la mente! Risolvi un sudoku oggi 💡',
+          schedule: {
+            at: noon,
+            repeats: true,
+            every: 'day',
+          },
+          channelId: 'sudoku_daily',
+          sound: 'notifica.mp3',
+          smallIcon: 'ic_stat_name',
+          actionTypeId: '',
+          extra: null,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error('Errore notifica:', e);
+  }
+}
+
 export default function App() {
   const [phase, setPhase] = useState<AppPhase>('splash');
   const [legalFrom, setLegalFrom] = useState<'consent' | 'settings'>('settings');
@@ -53,6 +108,39 @@ export default function App() {
   const [givenBoard, setGivenBoard] = useState<BoardState | null>(saved.givenBoard);
   const [userBoard, setUserBoard] = useState<BoardState | null>(saved.userBoard);
   const [solution, setSolution] = useState<Grid | null>(saved.solution);
+
+  const hasActiveGame = givenBoard !== null;
+  const currentGame = hasActiveGame ? { size: gridSize, isDiagonal } : null;
+
+  // Schedula notifica quando l'app entra nella fase app
+  useEffect(() => {
+    if (phase === 'app') {
+      scheduleDailyNotification();
+    }
+  }, [phase]);
+
+  // Gestione tasto back Android
+  useEffect(() => {
+    const handler = CapApp.addListener('backButton', () => {
+      if (phase === 'splash' || phase === 'onboarding') return;
+      if (phase === 'consent') { CapApp.exitApp(); return; }
+
+      switch (screen) {
+        case 'home':     CapApp.exitApp(); break;
+        case 'given':    setScreen('home'); break;
+        case 'user':     setScreen('given'); break;
+        case 'hint':     setScreen('user'); break;
+        case 'settings': setScreen(prevScreen); break;
+        case 'privacy':
+        case 'terms':
+          if (legalFrom === 'consent') { setLegalFrom('settings'); setPhase('consent'); }
+          else setScreen('settings');
+          break;
+        default: setScreen('home');
+      }
+    });
+    return () => { handler.then(h => h.remove()); };
+  }, [phase, screen, prevScreen, legalFrom]);
 
   useEffect(() => {
     if (phase === 'app') {
@@ -99,16 +187,18 @@ export default function App() {
     setScreen('settings');
   };
 
-  const handleSelectSize = (size: GridSize, diagonal: boolean = false) => {
+  const handleSelectSize = (size: GridSize, diagonal: boolean = false, forceReset: boolean = false) => {
+    const variantChanged = size !== gridSize || diagonal !== isDiagonal;
     setGridSize(size);
     setIsDiagonal(diagonal);
-    setGivenBoard(null);
-    setUserBoard(null);
-    setSolution(null);
+    if (forceReset || variantChanged) {
+      setGivenBoard(null);
+      setUserBoard(null);
+      setSolution(null);
+    }
     setScreen('given');
   };
 
-  // Schermate di avvio
   if (phase === 'splash') return <SplashScreen onFinish={handleSplashFinish} />;
   if (phase === 'onboarding') return <OnboardingScreen onFinish={handleOnboardingFinish} />;
   if (phase === 'consent') return (
@@ -125,6 +215,7 @@ export default function App() {
         <HomeScreen
           onSelectSize={handleSelectSize}
           onSettings={() => openSettings('home')}
+          currentGame={currentGame}
         />
       )}
       {screen === 'given' && (
