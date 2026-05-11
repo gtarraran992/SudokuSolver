@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import SplashScreen from './screens/SplashScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
+import ConsentScreen from './screens/ConsentScreen';
 import HomeScreen from './screens/HomeScreen';
 import GivenScreen from './screens/GivenScreen';
 import UserScreen from './screens/UserScreen';
@@ -9,8 +12,11 @@ import { BoardState, Grid, GridSize } from './logic/types';
 import './App.css';
 
 type Screen = 'home' | 'given' | 'user' | 'hint' | 'settings' | 'privacy' | 'terms';
+type AppPhase = 'splash' | 'onboarding' | 'consent' | 'app';
 
 const STORAGE_KEY = 'sudokuhint_state';
+const ONBOARDING_KEY = 'sudokuhint_onboarding_done';
+const CONSENT_KEY = 'sudokuhint_consent_done';
 
 interface SavedState {
   screen: Screen;
@@ -36,6 +42,9 @@ function loadState(): SavedState {
 }
 
 export default function App() {
+  const [phase, setPhase] = useState<AppPhase>('splash');
+  const [legalFrom, setLegalFrom] = useState<'consent' | 'settings'>('settings');
+
   const saved = loadState();
   const [screen, setScreen] = useState<Screen>(saved.screen);
   const [prevScreen, setPrevScreen] = useState<Screen>('home');
@@ -46,8 +55,36 @@ export default function App() {
   const [solution, setSolution] = useState<Grid | null>(saved.solution);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, gridSize, isDiagonal, givenBoard, userBoard, solution }));
-  }, [screen, gridSize, isDiagonal, givenBoard, userBoard, solution]);
+    if (phase === 'app') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, gridSize, isDiagonal, givenBoard, userBoard, solution }));
+    }
+  }, [screen, gridSize, isDiagonal, givenBoard, userBoard, solution, phase]);
+
+  const handleSplashFinish = () => {
+    const onboardingDone = localStorage.getItem(ONBOARDING_KEY);
+    const consentDone = localStorage.getItem(CONSENT_KEY);
+    if (!onboardingDone) setPhase('onboarding');
+    else if (!consentDone) setPhase('consent');
+    else setPhase('app');
+  };
+
+  const handleOnboardingFinish = () => {
+    localStorage.setItem(ONBOARDING_KEY, 'true');
+    const consentDone = localStorage.getItem(CONSENT_KEY);
+    if (!consentDone) setPhase('consent');
+    else setPhase('app');
+  };
+
+  const handleConsentAccept = () => {
+    localStorage.setItem(CONSENT_KEY, 'true');
+    setPhase('app');
+  };
+
+  const handleConsentLegal = (page: 'privacy' | 'terms') => {
+    setLegalFrom('consent');
+    setScreen(page);
+    setPhase('app');
+  };
 
   const handleReset = () => {
     localStorage.removeItem(STORAGE_KEY);
@@ -71,6 +108,17 @@ export default function App() {
     setScreen('given');
   };
 
+  // Schermate di avvio
+  if (phase === 'splash') return <SplashScreen onFinish={handleSplashFinish} />;
+  if (phase === 'onboarding') return <OnboardingScreen onFinish={handleOnboardingFinish} />;
+  if (phase === 'consent') return (
+    <ConsentScreen
+      onAccept={handleConsentAccept}
+      onOpenPrivacy={() => handleConsentLegal('privacy')}
+      onOpenTerms={() => handleConsentLegal('terms')}
+    />
+  );
+
   return (
     <div className="app">
       {screen === 'home' && (
@@ -87,10 +135,7 @@ export default function App() {
           onConfirm={(board) => {
             const givenChanged = JSON.stringify(board) !== JSON.stringify(givenBoard);
             setGivenBoard(board);
-            if (givenChanged) {
-              setUserBoard(null);
-              setSolution(null);
-            }
+            if (givenChanged) { setUserBoard(null); setSolution(null); }
             setScreen('user');
           }}
           onBack={() => setScreen('home')}
@@ -126,20 +171,26 @@ export default function App() {
       {screen === 'settings' && (
         <SettingsScreen
           onBack={() => setScreen(prevScreen)}
-          onOpenPrivacy={() => setScreen('privacy')}
-          onOpenTerms={() => setScreen('terms')}
+          onOpenPrivacy={() => { setPrevScreen('settings'); setScreen('privacy'); }}
+          onOpenTerms={() => { setPrevScreen('settings'); setScreen('terms'); }}
         />
       )}
       {screen === 'privacy' && (
         <LegalScreen
           page="privacy"
-          onBack={() => setScreen('settings')}
+          onBack={() => {
+            if (legalFrom === 'consent') { setLegalFrom('settings'); setPhase('consent'); }
+            else setScreen('settings');
+          }}
         />
       )}
       {screen === 'terms' && (
         <LegalScreen
           page="terms"
-          onBack={() => setScreen('settings')}
+          onBack={() => {
+            if (legalFrom === 'consent') { setLegalFrom('settings'); setPhase('consent'); }
+            else setScreen('settings');
+          }}
         />
       )}
     </div>

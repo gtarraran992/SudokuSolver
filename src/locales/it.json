@@ -1,7 +1,25 @@
 {
   "appName": "Sudoku Hint",
 
-"home": {
+"onboarding": {
+  "skip": "Salta",
+  "next": "Avanti →",
+  "start": "Inizia →",
+  "slide1Title": "Benvenuto in Sudoku Hint",
+  "slide1Desc": "L'assistente intelligente che ti aiuta a risolvere i sudoku senza darti la soluzione.",
+  "slide2Title": "Indizi graduali",
+  "slide2Desc": "Tre livelli di aiuto: dove guardare, quale tecnica usare, e la risposta esatta.",
+  "slide3Title": "Tante varianti",
+  "slide3Desc": "Scegli tra 4x4, 6x6, 9x9, Diagonale, 12x12 e 16x16."
+},
+"consent": {
+  "title": "Prima di iniziare",
+  "subtitle": "Per continuare, dichiaro di aver letto e di accettare:",
+  "accept": "Accetto e continuo",
+  "note": "Puoi rileggere questi documenti in qualsiasi momento nelle Impostazioni."
+},
+
+  "home": {
   "title": "Sudoku Hint",
   "subtitle": "Scegli la variante",
   "size4": "4x4",

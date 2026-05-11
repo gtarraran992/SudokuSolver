@@ -97,7 +97,7 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   z-index: 100;
   animation: fadeIn 0.15s ease;
@@ -105,10 +105,10 @@
 
 .modal {
   background: #FFFFFF;
-  border-radius: 20px 20px 0 0;
+  border-radius: 20px;
   padding: 24px 20px 32px;
-  width: 100%;
-  max-width: 480px;
+  width: calc(100% - 48px);
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 12px;
