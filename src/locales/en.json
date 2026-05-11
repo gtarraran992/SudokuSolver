@@ -67,13 +67,14 @@
     "restart": "Start over",
     "restartConfirm": "Do you want to clear all entered numbers?",
     "errorConflicts": "Found {{count}} conflicts. Check the red cells.",
-    "scan": "📷 Scan grid",
+    "scan": "📷 Scan grid (beta)",
 "scanning": "⏳ Scanning...",
 "scanSuccess": "Grid acquired! Check the numbers and correct any errors.",
 "scanError": "Could not recognize the grid. Try again or enter numbers manually.",
 "scanProgress1": "📷 Opening camera...",
 "scanProgress2": "⏳ Analyzing image...",
-"scanProgress3": "🔍 Recognizing numbers..."
+"scanProgress3": "🔍 Recognizing numbers...",
+"scanBeta": "⚠️ Feature under development: scanning may not correctly position all numbers. Proceed anyway and manually correct any errors?"
   },
 
   "user": {

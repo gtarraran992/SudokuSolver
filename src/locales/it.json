@@ -66,13 +66,14 @@
     "restart": "Ricomincia",
     "restartConfirm": "Vuoi cancellare tutti i numeri inseriti?",
     "errorConflicts": "Trovati {{count}} conflitti. Controlla le celle rosse.",
-    "scan": "📷 Scansiona griglia",
+    "scan": "📷 Scansiona griglia (beta)",
 "scanning": "⏳ Scansione in corso...",
 "scanSuccess": "Griglia acquisita! Controlla i numeri e correggi eventuali errori.",
 "scanError": "Non è stato possibile riconoscere la griglia. Riprova o inserisci i numeri manualmente.",
 "scanProgress1": "📷 Apertura fotocamera...",
 "scanProgress2": "⏳ Analisi immagine...",
-"scanProgress3": "🔍 Riconoscimento numeri..."
+"scanProgress3": "🔍 Riconoscimento numeri...",
+"scanBeta": "⚠️ Funzione in fase di implementazione: la scansione potrebbe non posizionare correttamente tutti i numeri. Procedere comunque e correggere manualmente gli errori?"
   },
 
   "user": {

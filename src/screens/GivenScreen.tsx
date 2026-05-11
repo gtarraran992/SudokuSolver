@@ -30,27 +30,84 @@ function minCells(size: GridSize): number {
   return 17;
 }
 
-// Estrae una griglia size x size dal testo OCR
-function parseGridFromText(text: string, size: GridSize): BoardState | null {
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+// Ridimensiona l'immagine base64 per migliorare l'OCR
+async function resizeBase64(base64: string, maxSize: number = 1200): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.92).split(',')[1]);
+    };
+    img.src = `data:image/jpeg;base64,${base64}`;
+  });
+}
+
+// Parsing basato su coordinate pixel dei simboli (hocr)
+function parseGridFromHocr(hocr: string, size: GridSize): BoardState | null {
   const grid: BoardState = emptyBoard(size);
-  let row = 0;
 
-  for (const line of lines) {
-    if (row >= size) break;
-    const tokens = line.match(/\d+|[._\-|]/g);
-    if (!tokens) continue;
+  // Estrai tutti i simboli con le loro coordinate bbox
+  const symbolRegex = /<span class='ocrx_word'[^>]*bbox (\d+) (\d+) (\d+) (\d+)[^>]*>([^<]+)<\/span>/g;
+  const words: { x: number; y: number; w: number; h: number; text: string }[] = [];
 
-    let col = 0;
-    for (const token of tokens) {
-      if (col >= size) break;
-      const num = parseInt(token);
-      if (!isNaN(num) && num >= 1 && num <= size) {
-        grid[row][col] = { value: num as CellValue, type: 'given', isError: false };
-      }
-      col++;
+  let match;
+  while ((match = symbolRegex.exec(hocr)) !== null) {
+    const x1 = parseInt(match[1]);
+    const y1 = parseInt(match[2]);
+    const x2 = parseInt(match[3]);
+    const y2 = parseInt(match[4]);
+    const text = match[5].trim().replace(/\D/g, '');
+    if (text) {
+      words.push({
+        x: Math.round((x1 + x2) / 2),
+        y: Math.round((y1 + y2) / 2),
+        w: x2 - x1,
+        h: y2 - y1,
+        text,
+      });
     }
-    if (col > 0) row++;
+  }
+
+  if (words.length < 4) return null;
+
+  // Trova i bounds della griglia
+  const xs = words.map(w => w.x);
+  const ys = words.map(w => w.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+
+  const cellW = (maxX - minX) / (size - 1);
+  const cellH = (maxY - minY) / (size - 1);
+
+  if (cellW < 1 || cellH < 1) return null;
+
+  // Assegna ogni numero alla cella più vicina
+  for (const word of words) {
+    // Estrai ogni cifra singola dalla parola
+    for (let i = 0; i < word.text.length; i++) {
+      const digit = parseInt(word.text[i]);
+      if (isNaN(digit) || digit < 1 || digit > size) continue;
+
+      // Stima la posizione x per questa cifra nella parola
+      const charX = word.x - (word.w / 2) + (word.w / word.text.length) * (i + 0.5);
+      const charY = word.y;
+
+      const col = Math.round((charX - minX) / cellW);
+      const row = Math.round((charY - minY) / cellH);
+
+      if (row >= 0 && row < size && col >= 0 && col < size) {
+        if (grid[row][col].value === 0) {
+          grid[row][col] = { value: digit as CellValue, type: 'given', isError: false };
+        }
+      }
+    }
   }
 
   const filled = grid.flat().filter(c => c.value !== 0).length;
@@ -93,22 +150,24 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
   }, [selectedCell]);
 
   const handleScan = useCallback(async () => {
+
+    const confirmed = confirm(t('given.scanBeta'));
+    if (!confirmed) return;
+    
     try {
       setIsScanning(true);
       setScanMsg('');
       setErrorMsg('');
       setScanProgress(t('given.scanProgress1'));
 
-      // Scatta foto
       const photo = await Camera.getPhoto({
         quality: 90,
         allowEditing: false,
-        resultType: 'uri' as any,
+        resultType: 'base64' as any,
         source: 'CAMERA' as any,
       });
 
-      const imageUrl = photo.webPath ?? photo.path ?? '';
-      if (!imageUrl) {
+      if (!photo.base64String) {
         setIsScanning(false);
         setScanProgress('');
         return;
@@ -116,27 +175,28 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
 
       setScanProgress(t('given.scanProgress2'));
 
-      // Inizializza Tesseract con file locali
-const worker = await createWorker('eng', 1, {
-  workerPath: '/tesseract/worker.min.js',
-  langPath: '/tesseract',
-  corePath: '/tesseract/tesseract-core.wasm.js',
-  logger: () => {},
-});
+      // Ridimensiona l'immagine
+      const resized = await resizeBase64(photo.base64String);
+      const imageData = `data:image/jpeg;base64,${resized}`;
 
-      // Configura per numeri (whitelist solo cifre)
+      const worker = await createWorker('eng', 1, {
+        logger: () => {},
+      });
+
       await worker.setParameters({
         tessedit_char_whitelist: '0123456789',
+        tessedit_pageseg_mode: '6' as any,
       });
 
       setScanProgress(t('given.scanProgress3'));
 
-      const { data: { text } } = await worker.recognize(imageUrl);
+      // Usa hocr per ottenere le coordinate pixel
+      const { data: { hocr } } = await worker.recognize(imageData, {}, { hocr: true });
       await worker.terminate();
 
       setScanProgress('');
 
-      const parsed = parseGridFromText(text, gridSize);
+      const parsed = hocr ? parseGridFromHocr(hocr, gridSize) : null;
 
       if (!parsed) {
         setErrorMsg(t('given.scanError'));
