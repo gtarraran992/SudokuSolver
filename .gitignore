@@ -27,3 +27,10 @@ dist-ssr
 *.keystore
 *.jks
 keystore.properties
+
+# OpenCV SDK - cartelle grandi
+/sdk/.cxx/
+/sdk/build/
+/sdk/native/
+/sdk/libcxx_helper/
+/sdk/etc/
