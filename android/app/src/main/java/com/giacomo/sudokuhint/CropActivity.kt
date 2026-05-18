@@ -51,7 +51,7 @@ class CropActivity : AppCompatActivity() {
             val file = java.io.File(cacheDir, "cropped_${System.currentTimeMillis()}.jpg")
             val outputUri = androidx.core.content.FileProvider.getUriForFile(
                 this,
-                "com.giacomo.sudokuocrtest.fileprovider",
+                "com.giacomo.sudokuhint.fileprovider",
                 file
             )
             cropImageView.croppedImageAsync(

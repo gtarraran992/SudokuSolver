@@ -4,6 +4,8 @@ import Numpad from '../components/Numpad';
 import { BoardState, CellState, CellValue, Grid, GridSize } from '../logic/types';
 import { validateGrid } from '../logic/validator';
 import { useTranslation } from 'react-i18next';
+import { Capacitor } from '@capacitor/core';
+import { SudokuOcr } from '../plugins/SudokuOcrPlugin';
 import './Screen.css';
 import './SettingsScreen.css';
 
@@ -28,11 +30,24 @@ function minCells(size: GridSize): number {
   return 17;
 }
 
+function gridToBoardState(grid: number[][]): BoardState {
+  return grid.map(row =>
+    row.map((value): CellState => ({
+      value: value as CellValue,
+      type: value === 0 ? 'empty' : 'given',
+      isError: false,
+    }))
+  );
+}
+
 export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBoard, onBack }: Props) {
   const { t } = useTranslation();
   const [board, setBoard] = useState<BoardState>(initialBoard ?? emptyBoard(gridSize));
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [scanLoading, setScanLoading] = useState(false);
+
+  const isNative = Capacitor.isNativePlatform();
 
   const handleCellPress = useCallback((row: number, col: number) => {
     setSelectedCell({ row, col });
@@ -58,6 +73,19 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
       return next;
     });
   }, [selectedCell]);
+
+  const handleScan = useCallback(async () => {
+    try {
+      setScanLoading(true);
+      setErrorMsg('');
+      const { grid } = await SudokuOcr.recognizeGrid({ gridSize });
+      setBoard(gridToBoardState(grid));
+    } catch (e: any) {
+      setErrorMsg(t('given.scanError'));
+    } finally {
+      setScanLoading(false);
+    }
+  }, [gridSize, t]);
 
   const handleConfirm = useCallback(() => {
     const grid = board.map(r => r.map(c => c.value)) as Grid;
@@ -120,6 +148,12 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
       <p className="counter">
         {t('given.counter', { count: filledCount })} {canConfirm ? t('given.counterOk') : `(minimo ${min})`}
       </p>
+
+      {isNative && (
+        <button className="btn-ghost" onClick={handleScan} disabled={scanLoading}>
+          {scanLoading ? t('given.scanProgress1') : '📷 ' + t('given.scan')}
+        </button>
+      )}
 
       <button className="btn-primary" onClick={handleConfirm} disabled={!canConfirm}>
         {t('given.confirm')}

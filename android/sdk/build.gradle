@@ -90,6 +90,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
+apply plugin: 'org.jetbrains.kotlin.android'
 try {
     apply plugin: 'kotlin-android'
     println "Configure OpenCV with Kotlin"
@@ -178,6 +179,9 @@ android {
             withJavadocJar()
         }
     }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 
 }
 
@@ -202,4 +206,5 @@ publishing {
 }
 
 dependencies {
+implementation 'androidx.core:core-ktx:1.18.0'
 }
