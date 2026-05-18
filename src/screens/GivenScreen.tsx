@@ -151,7 +151,7 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
 
       {isNative && (
         <button className="btn-ghost" onClick={handleScan} disabled={scanLoading}>
-          {scanLoading ? t('given.scanProgress1') : '📷 ' + t('given.scan')}
+          {scanLoading ? t('given.scanProgress1') : t('given.scan')}
         </button>
       )}
 
