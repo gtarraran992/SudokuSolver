@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { App as CapApp } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Capacitor } from '@capacitor/core';
 import SplashScreen from './screens/SplashScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
 import ConsentScreen from './screens/ConsentScreen';
@@ -45,6 +46,7 @@ function loadState(): SavedState {
 }
 
 async function scheduleDailyNotification() {
+  if (!Capacitor.isNativePlatform()) return; // ← aggiunta
   try {
     // Chiedi permesso
     const { display } = await LocalNotifications.requestPermissions();

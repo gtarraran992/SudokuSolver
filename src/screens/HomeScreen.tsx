@@ -68,7 +68,12 @@ export default function HomeScreen({ onSelectSize, onSettings, currentGame }: Pr
           <h1>{t('appName')}</h1>
           <p>{t('home.subtitle')}</p>
         </div>
-        <button className="btn-settings" onClick={onSettings}>⚙️</button>
+        <button
+         className="btn-settings"
+         onClick={onSettings}
+         style={{ color: '#ffffff', background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', padding: 0, opacity: 0.85 }}
+        > ⚙️ </button>
+        
       </div>
 
       <div className="home-variants">

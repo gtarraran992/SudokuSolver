@@ -117,3 +117,25 @@
 .btn-settings:hover {
   color: #5F5E5A;
 }
+
+/* GivenScreen / UserScreen header blu */
+.screen-header-blue {
+  background: #0D47D9;
+  margin: -20px -16px 0;
+  padding: 48px 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.screen-header-blue .btn-back {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+}
+
+.screen-header-blue h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}

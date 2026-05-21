@@ -116,10 +116,13 @@ export default function GivenScreen({ gridSize, isDiagonal, onConfirm, initialBo
 
   return (
     <div className="screen">
-      <div className="screen-header">
-        <button className="btn-back" onClick={onBack}>← {t('settings.back')}</button>
-        <h1>{gridSize}x{gridSize}{isDiagonal ? ' ✖️' : ''}</h1>
-      </div>
+<div className="screen-header-blue">
+  <button className="btn-back" onClick={onBack}>← Indietro</button>
+  <h1>{gridSize}x{gridSize}{isDiagonal ? ' ✖️' : ''}</h1>
+  <button onClick={handleScan} disabled={scanLoading} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, padding: '6px 10px', color: 'rgba(255,255,255,0.85)', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+    📷 {scanLoading ? '...' : 'Scan'}
+  </button>
+</div>
 
       <div className="step-row">
         <span className="step-badge">{t('given.step')}</span>

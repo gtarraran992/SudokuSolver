@@ -21,7 +21,7 @@
 
   "home": {
   "title": "Sudoku Hint",
-  "subtitle": "Scegli la variante",
+  "subtitle": "Scegli la variante che vuoi risolvere",
   "size4": "4x4",
   "size6": "6x6",
   "size9": "9x9",
